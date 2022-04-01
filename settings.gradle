@@ -18,3 +18,4 @@ rootProject.name = "Components"
 
 include ':app'
 include ':network'
+include ':widget'

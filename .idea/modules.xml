@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Components.iml" filepath="$PROJECT_DIR$/.idea/modules/Components.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Components.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Components.app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/network/Components.network.iml" filepath="$PROJECT_DIR$/.idea/modules/network/Components.network.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/widget/Components.widget.iml" filepath="$PROJECT_DIR$/.idea/modules/widget/Components.widget.iml" />
     </modules>
   </component>
 </project>
