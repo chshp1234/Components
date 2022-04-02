@@ -3,11 +3,12 @@ package com.basic.widget
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-
 
 class ShelfTabLayout(
     context: Context,
@@ -18,7 +19,9 @@ class ShelfTabLayout(
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attributeSet: AttributeSet?) : this(context, attributeSet, 0)
 
-    private val bgRadius: Float
+    private val bgRadius: Int
+
+    private val paint: Paint
 
     private val animator = ValueAnimator.ofInt().apply {
         addUpdateListener {
@@ -26,11 +29,20 @@ class ShelfTabLayout(
         }
     }
 
-    var listener: OnClickListener? = null
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    }
+
+    private var listener: OnClickListener? = null
 
     init {
         val array = context.obtainStyledAttributes(attrs, R.styleable.ShelfTabLayout)
-        bgRadius = array.getDimension(R.styleable.ShelfTabLayout_bgRadius, 0f)
+        bgRadius = array.getInt(R.styleable.ShelfTabLayout_bgRadius, 0)
+
+        paint = Paint()
+        paint.strokeWidth = 2f
+        paint.color = Color.parseColor("#333333")
+
         array.recycle()
         setWillNotDraw(false)
     }
@@ -62,8 +74,12 @@ class ShelfTabLayout(
     }
 
     override fun onDraw(canvas: Canvas) {
+
+        canvas.drawLine(0f, 0f, width.toFloat(), 0f, paint)
+
         super.onDraw(canvas)
-//        drawBackGround(canvas)
+
+        //        drawBackGround(canvas)
     }
 
     override fun onClick(v: View) {
@@ -114,7 +130,7 @@ class ShelfTabLayout(
         }
     }
 
-    fun getDrawableRadius(): Float {
+    fun getDrawableRadius(): Int {
         return bgRadius
     }
 
