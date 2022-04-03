@@ -5,16 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <com.basic.widget.DrawingView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toTopOf="@+id/shelfTabLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.basic.widget.ShelfTabLayout
-        android:layout_width="300dp"
+        android:id="@+id/shelfTabLayout"
+        android:layout_width="100dp"
         android:layout_height="48dp"
-        app:bgRadius="6"
+        app:bgRadius="8"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -22,16 +34,17 @@
             android:textColor="#333" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
             android:text="通讯录"
             android:textColor="#333"
+            app:checked="true"
             tools:ignore="TouchTargetSizeCheck" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
@@ -40,7 +53,7 @@
             tools:ignore="TouchTargetSizeCheck" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"

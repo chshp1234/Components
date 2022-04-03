@@ -2,13 +2,13 @@ package com.basic.widget
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
+
 
 class ShelfTabLayout(
     context: Context,
@@ -22,15 +22,18 @@ class ShelfTabLayout(
     private val bgRadius: Int
 
     private val paint: Paint
+    private val border: Path
+
+    private val clearPaint: Paint
+
+    private var currentChild: View? = null
+    private var MODE_CLEAR = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
+    private var MODE_SRC = PorterDuffXfermode(PorterDuff.Mode.SRC)
 
     private val animator = ValueAnimator.ofInt().apply {
         addUpdateListener {
             setBounds(it.animatedValue as Int)
         }
-    }
-
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
     private var listener: OnClickListener? = null
@@ -42,40 +45,102 @@ class ShelfTabLayout(
         paint = Paint()
         paint.strokeWidth = 2f
         paint.color = Color.parseColor("#333333")
+        paint.style = Paint.Style.STROKE
+        paint.strokeJoin = Paint.Join.ROUND
+//        paint.setShadowLayer(1f, 1f, -1f, Color.parseColor("#efefef"))
+
+        clearPaint = Paint()
+
+        border = Path()
 
         array.recycle()
         setWillNotDraw(false)
+
+//        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
     }
 
     override fun addView(child: View?, index: Int, params: ViewGroup.LayoutParams?) {
         super.addView(child, index, params)
+
+        val param = params as? MyLayoutParam
+
+        param?.run {
+            if (checked) {
+                currentChild = child
+            }
+        }
         child?.setOnClickListener(this)
+    }
+
+    override fun setLayoutParams(params: ViewGroup.LayoutParams?) {
+        when {
+            childCount == 0 -> {
+                params?.width = 0
+                params?.height = 0
+            }
+            orientation == VERTICAL -> {
+                params?.height = MATCH_PARENT
+            }
+            else -> {
+                params?.width = MATCH_PARENT
+            }
+        }
+
+        super.setLayoutParams(params)
+    }
+
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         super.onLayout(changed, l, t, r, b)
-        var child: View? = null
-        for (index in 0 until childCount) {
-            child = getChildAt(index)
-            val param = child.layoutParams as MyLayoutParam
-            if (param.checked) {
-                break
-            }
-        }
-
-        if (child == null && childCount > 0) {
-            child = getChildAt(0)
-        }
-
-        child?.let {
-            child.isSelected = true
-            setBounds((child.top + child.bottom) / 2)
-        }
     }
+
+    var layerId: Int? = null
 
     override fun onDraw(canvas: Canvas) {
 
-        canvas.drawLine(0f, 0f, width.toFloat(), 0f, paint)
+        (parent as ViewGroup).clipToPadding = false
+        (parent as ViewGroup).clipChildren = false
+
+        if (currentChild == null && childCount > 0) {
+            currentChild = getChildAt(0)
+        }
+
+//        if (layerId == null) {
+//            layerId = canvas.saveLayer(
+//                (parent as ViewGroup).top.toFloat(), (parent as ViewGroup).top.toFloat(),
+//                (parent as ViewGroup).right.toFloat(), (parent as ViewGroup).bottom.toFloat(), null
+//            )
+//        }
+
+        currentChild?.run {
+
+//            paint.xfermode = MODE_CLEAR
+//            canvas.drawRect(0f, 0f, 300f, 300f, paint)
+//            paint.xfermode = MODE_SRC
+
+//            layerId?.let {
+//                canvas.restoreToCount(it)
+//            }
+
+            isSelected = true
+
+            border.reset()
+            border.moveTo(0f, (parent as ViewGroup).getChildAt(0).top.toFloat())
+            border.lineTo(left.toFloat(), (parent as ViewGroup).getChildAt(0).top.toFloat())
+            border.quadTo(
+                left.toFloat() + width / 2, -bgRadius * 10f,
+                left.toFloat() + width, (parent as ViewGroup).getChildAt(0).top.toFloat()
+            )
+            border.lineTo(
+                (parent as ViewGroup).width.toFloat(),
+                (parent as ViewGroup).getChildAt(0).top.toFloat()
+            )
+
+            canvas.drawPath(border, paint)
+        }
 
         super.onDraw(canvas)
 
@@ -88,8 +153,10 @@ class ShelfTabLayout(
 
     private fun handleClickEvent(v: View, fake: Boolean) {
 
-        var selected: View? = null
-        for (i in 0 until childCount) {
+        currentChild = v
+
+        invalidate()
+        /*for (i in 0 until childCount) {
             val child = getChildAt(i)
             if (child.isSelected)
                 selected = child
@@ -116,7 +183,7 @@ class ShelfTabLayout(
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             child.isSelected = child == v
-        }
+        }*/
 
         listener?.onClick(v)
     }
@@ -135,20 +202,36 @@ class ShelfTabLayout(
     }
 
     override fun generateLayoutParams(attrs: AttributeSet?): LayoutParams {
-        return MyLayoutParam(context, attrs)
+        return generateMyLayoutParams(attrs = attrs)
     }
 
     override fun generateLayoutParams(lp: ViewGroup.LayoutParams?): LayoutParams {
-        lp?.run {
-            (lp as? MyLayoutParam)?.run {
-                return MyLayoutParam(lp)
-            }
-        }
-        return MyLayoutParam(lp)
+        return generateMyLayoutParams(lp = lp)
     }
 
     override fun generateDefaultLayoutParams(): LayoutParams {
-        return MyLayoutParam()
+        return generateMyLayoutParams()
+    }
+
+    private fun generateMyLayoutParams(
+        attrs: AttributeSet? = null,
+        lp: ViewGroup.LayoutParams? = null
+    ): MyLayoutParam {
+
+        val param: MyLayoutParam =
+            if (lp != null && lp is MyLayoutParam) {
+                MyLayoutParam(lp)
+            } else if (attrs != null) {
+                MyLayoutParam(context, attrs)
+            } else {
+                MyLayoutParam(context, null)
+            }
+
+        param.width = MATCH_PARENT
+        param.height = MATCH_PARENT
+        param.weight = 1f
+
+        return param
     }
 }
 
