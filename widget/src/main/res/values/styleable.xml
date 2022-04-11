@@ -4,4 +4,94 @@
         <attr name="bgRadius" format="integer" />
         <attr name="checked" format="boolean" />
     </declare-styleable>
+
+    <attr name="mask_color" format="color|reference" />
+    <attr name="mask_mode">
+        <enum name="CLEAR" value="0" />
+        <enum name="SRC" value="1" />
+        <enum name="DST" value="2" />
+        <enum name="SRC_OVER" value="3" />
+        <enum name="DST_OVER" value="4" />
+        <enum name="SRC_IN" value="5" />
+        <enum name="DST_IN" value="6" />
+        <enum name="SRC_OUT" value="7" />
+        <enum name="DST_OUT" value="8" />
+        <enum name="SRC_ATOP" value="9" />
+        <enum name="DST_ATOP" value="10" />
+        <enum name="XOR" value="11" />
+        <enum name="DARKEN" value="16" />
+        <enum name="LIGHTEN" value="17" />
+        <enum name="MULTIPLY" value="13" />
+        <enum name="SCREEN" value="14" />
+        <enum name="ADD" value="12" />
+        <enum name="OVERLAY" value="15" />
+    </attr>
+    <declare-styleable name="MaskableImageView">
+        <attr name="mask_color" />
+        <attr name="mask_mode" />
+    </declare-styleable>
+
+    <declare-styleable name="MaskableTextView">
+        <attr name="mask_color" />
+        <attr name="mask_mode" />
+    </declare-styleable>
+
+    <declare-styleable name="RoundCornerLayout">
+        <attr name="roundAsCircle" format="boolean" />
+        <attr name="roundedCornerRadius" format="dimension" />
+        <attr name="roundTopLeft" format="dimension" />
+        <attr name="roundTopRight" format="dimension" />
+        <attr name="roundBottomLeft" format="dimension" />
+        <attr name="roundBottomRight" format="dimension" />
+        <attr name="roundingBorderWidth" format="dimension" />
+        <attr name="roundingBorderColor" format="color|reference" />
+    </declare-styleable>
+
+    <attr name="radius" format="dimension" />
+    <declare-styleable name="RoundLabelTextView">
+        <!--标签的背景色-->
+        <attr name="labelBackgroundColor" format="color" />
+        <!--标签的尺寸-->
+        <attr name="labelSize" format="dimension" />
+        <!--圆角的尺寸(只有顶角支持)-->
+        <attr name="radius" />
+        <!--位于哪个角-->
+        <attr name="orientation" format="enum">
+            <enum name="left_top" value="0" />
+            <enum name="right_top" value="90" />
+            <enum name="left_bottom" value="-90" />
+            <enum name="right_bottom" value="180" />
+        </attr>
+
+        <!--内容文本-->
+        <attr name="contentText" format="string" />
+        <!--内容文本的颜色-->
+        <attr name="contentTextColor" format="color" />
+        <!--内容的大小-->
+        <attr name="contentTextSize" format="dimension" />
+        <!--内容的侧边距-->
+        <attr name="contentMarginStart" format="dimension" />
+        <!--内容的底边距-->
+        <attr name="contentMarginBottom" format="dimension" />
+        <!--内容文本的样式-->
+        <attr name="contentTextStyle" format="enum">
+            <enum name="normal" value="0" />
+            <enum name="italic" value="1" />
+            <enum name="bold" value="2" />
+        </attr>
+
+        <!--标题的文本(靠近顶点的文本)-->
+        <attr name="topText" format="string" />
+        <attr name="topTextColor" format="color" />
+        <attr name="topTextSize" format="dimension" />
+        <attr name="topMarginStart" format="dimension" />
+        <attr name="topMarginBottom" format="dimension" />
+
+        <attr name="topTextStyle" format="enum">
+            <enum name="normal" value="0" />
+            <enum name="italic" value="1" />
+            <enum name="bold" value="2" />
+        </attr>
+
+    </declare-styleable>
 </resources>

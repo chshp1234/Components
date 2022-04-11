@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="mToolbarStyle" parent="@style/Widget.AppCompat.Toolbar">
+        <!-- 设置该属性解决Toolbar左边空白 默认为16dp-->
+        <item name="contentInsetStart">0dp</item>
+        <item name="contentInsetStartWithNavigation">0dp</item>
+        <item name="titleMargin">0dp</item>
+        <!--Toolbar Button min Height.Suggest use 0dp,
+            also can use your Toolbar's Height-->
+        <item name="android:minHeight">0dp</item>
+        <!--Toolbar Button Max height.
+            Suggest use size <= your custom Toolbar's Height-->
+        <item name="maxButtonHeight">100dp</item>
+    </style>
+
+    <style name="customProgressBarAlert" parent="Base.Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+</resources>

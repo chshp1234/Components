@@ -53,6 +53,10 @@ public class DrawingView extends View {
                 break;
             case MotionEvent.ACTION_MOVE:
                 touchMove(event);
+                break;
+            case MotionEvent.ACTION_UP:
+                touchUp(event);
+                break;
         }
         //更新绘制
         invalidate();
@@ -106,6 +110,10 @@ public class DrawingView extends View {
             mX = x;
             mY = y;
         }
+    }
+
+    private void touchUp(MotionEvent event) {
+//        mPath.reset();
     }
 
 }
