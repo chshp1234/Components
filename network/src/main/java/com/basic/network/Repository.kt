@@ -3,17 +3,17 @@ package com.basic.network
 import android.text.TextUtils
 import android.util.Log
 import com.basic.network.data.Err
-import com.basic.network.data.Result
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import com.basic.network.data.Result
 
-abstract class Repository<DATA, SERVICE> {
+abstract class BaseRepository<DATA, SERVICE> {
 
-    val requestService: SERVICE by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
+    protected val requestService: SERVICE by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
         getRetrofit().create(serviceClass())
     }
 
@@ -78,45 +78,45 @@ abstract class Repository<DATA, SERVICE> {
             .build()
     }
 
-    abstract fun baseUrl(): String
+    protected abstract fun baseUrl(): String
 
-    abstract fun serviceClass(): Class<SERVICE>
+    protected abstract fun serviceClass(): Class<SERVICE>
 
-    abstract fun <T> validateData(data: DATA?): Result<T>
+    protected abstract fun <T> validateData(data: DATA?): Result<T>
 
-    abstract fun catchException(e: Throwable): Err
+    protected abstract fun catchException(e: Throwable): Err
 
-    open fun customCallAdapter(): List<CallAdapter.Factory>? {
+    protected open fun customCallAdapter(): List<CallAdapter.Factory>? {
         return null
     }
 
-    open fun customConverterFactory(): List<Converter.Factory>? {
+    protected open fun customConverterFactory(): List<Converter.Factory>? {
         return null
     }
 
-    open fun customHttpInterceptor(): List<Interceptor>? {
+    protected open fun customHttpInterceptor(): List<Interceptor>? {
         return null
     }
 
-    open fun customApplicationInterceptor(): List<Interceptor>? {
+    protected open fun customApplicationInterceptor(): List<Interceptor>? {
         return null
     }
 
-    suspend fun <T> fetchDataBySuspend(call: suspend () -> DATA): Result<T> {
+    protected suspend fun <T> fetchDataBySuspend(call: suspend SERVICE.() -> DATA): Result<T> {
         val response: DATA
         try {
-            response = call()
+            response = call(requestService)
         } catch (e: Throwable) {
             return catchException(e)
         }
         return validateData(response)
     }
 
-    fun <T> fetchDataByCall(
+    protected fun <T> fetchDataByCall(
         callback: SimpleCallback<T>,
-        call: Call<*>
+        call: SERVICE.() -> Call<*>
     ) {
-        (call as? Call<DATA>)?.enqueue(object : Callback<DATA> {
+        (call(requestService) as? Call<DATA>)?.enqueue(object : Callback<DATA> {
             override fun onResponse(call: Call<DATA>, response: Response<DATA>) {
 
                 validateData<T>(response.body()).catch {
@@ -132,4 +132,5 @@ abstract class Repository<DATA, SERVICE> {
             }
         }) ?: throw Throwable("call type not match")
     }
+
 }
