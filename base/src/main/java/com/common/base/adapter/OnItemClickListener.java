@@ -8,6 +8,6 @@ import android.view.View;
  * @author csp
  * @date 2017/10/12
  */
-public interface OnItemClickListener {
-    void onItemClick(View itemView, int position);
+public interface OnItemClickListener<T> {
+    void onItemClick(View itemView, T position);
 }

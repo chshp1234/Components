@@ -24,10 +24,9 @@ public class LoadMoreScrollListener extends RecyclerView.OnScrollListener {
         //        LogUtils.i("onScrolled: scrollDistance=" + scrollDistance);
         //                LogUtils.i("onScrolled: dx=" + dx);
         //                LogUtils.i("onScrolled: dy=" + dy);
-        RecyclerView.LayoutManager                      manager = recyclerView.getLayoutManager();
-        BaseLoadAdapter adapter = (BaseLoadAdapter) recyclerView.getAdapter();
-        int lastVisibleItemPosition = getLastVisiblePosition(
-                recyclerView);
+        RecyclerView.LayoutManager manager                 = recyclerView.getLayoutManager();
+        BaseLoadAdapter            adapter                 = (BaseLoadAdapter) recyclerView.getAdapter();
+        int                        lastVisibleItemPosition = getLastVisiblePosition(recyclerView);
         if (null == manager) {
             throw new RuntimeException("you should call setLayoutManager() first!!");
         }

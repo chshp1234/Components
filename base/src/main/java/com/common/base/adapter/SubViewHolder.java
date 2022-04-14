@@ -16,6 +16,6 @@ public class SubViewHolder extends RecyclerView.ViewHolder {
     }
 
     public <T extends View> T getView(@IdRes int viewId) {
-        return (T) (itemView.findViewById(viewId));
+        return itemView.findViewById(viewId);
     }
 }

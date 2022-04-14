@@ -19,9 +19,9 @@ import java.util.List;
  * @author csp
  * @date 2017/12/25
  */
-public abstract class BaseLoadAdapter<T> extends BaseAdapter<T, SubViewHolder> {
-    private static final String              TIP_ERR_NET = "哎哟，没网了，请检查网络设置";
-    protected            OnItemClickListener mOnItemClickListener;
+public abstract class BaseLoadAdapter<T, K extends SubViewHolder> extends BaseAdapter<T, SubViewHolder> {
+    private static final String                 TIP_ERR_NET = "哎哟，没网了，请检查网络设置";
+    protected            OnItemClickListener<T> mOnItemClickListener;
 
     protected LoadMoreListener loadMoreListener;
 
@@ -43,9 +43,14 @@ public abstract class BaseLoadAdapter<T> extends BaseAdapter<T, SubViewHolder> {
             new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (mOnItemClickListener == null) {
+                        return;
+                    }
                     if (v != null && v.getTag() != null && v.getTag() instanceof RecyclerView.ViewHolder) {
                         RecyclerView.ViewHolder holder = (RecyclerView.ViewHolder) v.getTag();
-                        mOnItemClickListener.onItemClick(v, holder.getBindingAdapterPosition());
+                        mOnItemClickListener.onItemClick(v,
+                                                         mList.get(holder.getBindingAdapterPosition())
+                                                        );
                     }
                 }
             };
@@ -67,14 +72,17 @@ public abstract class BaseLoadAdapter<T> extends BaseAdapter<T, SubViewHolder> {
                     LayoutInflater.from(parent.getContext())
                                   .inflate(R.layout.footer_view, parent, false));
         } else {
-            View view = LayoutInflater.from(mContext).
-                    inflate(getContentView(),
-                            parent,
-                            false
-                           );
+            Object contentView = getContentView(parent, viewType);
+            Object view;
+            if (contentView instanceof Integer) {
+                view = LayoutInflater.from(mContext).inflate((int) contentView, parent, false);
+            } else {
+                view = contentView;
+            }
+
             SubViewHolder viewHolder = createViewHolder(view);
             viewHolder.itemView.setOnClickListener(onItemClickListener);
-            view.setTag(viewHolder);
+            viewHolder.itemView.setTag(viewHolder);
             return viewHolder;
         }
     }
@@ -84,15 +92,15 @@ public abstract class BaseLoadAdapter<T> extends BaseAdapter<T, SubViewHolder> {
      *
      * @return item布局ID
      */
-    public abstract int getContentView();
+    public abstract Object getContentView(ViewGroup parent, int viewType);
 
     /**
      * 给view中的控件设置数据
      *
-     * @param holder   itemHolder
-     * @param position 当前item在当前的相对位置
+     * @param holder itemHolder
+     * @param item   当前item在当前的相对位置
      */
-    protected abstract void onBindItemViewHolder(SubViewHolder holder, int position);
+    protected abstract void onBindItemViewHolder(K holder, T item);
 
     /**
      * Create view holder sub view holder.
@@ -100,7 +108,7 @@ public abstract class BaseLoadAdapter<T> extends BaseAdapter<T, SubViewHolder> {
      * @param view the view
      * @return the sub view holder
      */
-    public abstract SubViewHolder createViewHolder(View view);
+    public abstract K createViewHolder(Object view);
 
     @Override
     public void onBindViewHolder(final SubViewHolder holder, int position) {
@@ -159,7 +167,7 @@ public abstract class BaseLoadAdapter<T> extends BaseAdapter<T, SubViewHolder> {
                     break;
             }
         } else {
-            onBindItemViewHolder(holder, position);
+            onBindItemViewHolder((K) holder, mList.get(holder.getBindingAdapterPosition()));
         }
     }
 
@@ -178,12 +186,11 @@ public abstract class BaseLoadAdapter<T> extends BaseAdapter<T, SubViewHolder> {
 
     @Override
     public int getItemCount() {
-        /*if (mList.size() < pageCount) {
-            hasMore = false;
+        if (loadMoreListener != null) {
+            return mList.size() + 1;
+        } else {
             return mList.size();
-        } else {*/
-        return mList.size() + 1;
-        //        }
+        }
     }
 
     public void setErrorStatus() {
@@ -236,7 +243,7 @@ public abstract class BaseLoadAdapter<T> extends BaseAdapter<T, SubViewHolder> {
     }
 
     public void setLoading(boolean loading) {
-        if (loading) {
+        if (loadMoreListener != null && loading) {
             loadState = STATE_LOADING;
             hasMore = true;
             asyncNotifyItemDate(getItemCount() - 1);
