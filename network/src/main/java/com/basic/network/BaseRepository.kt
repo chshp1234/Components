@@ -2,14 +2,13 @@ package com.basic.network
 
 import android.text.TextUtils
 import android.util.Log
-import com.basic.network.data.Err
+import com.basic.network.data.*
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
-import com.basic.network.data.Result
 
 abstract class BaseRepository<DATA, SERVICE> {
 
@@ -19,13 +18,13 @@ abstract class BaseRepository<DATA, SERVICE> {
 
     private fun getOkHttpClientBuilder(): OkHttpClient.Builder {
         val builder = OkHttpClient.Builder().apply {
-            connectTimeout(60, TimeUnit.SECONDS)//连接 超时时间
-            writeTimeout(60, TimeUnit.SECONDS)//写操作 超时时间
-            readTimeout(60, TimeUnit.SECONDS)//读操作 超时时间
-            retryOnConnectionFailure(true)//错误重连
-//            val cacheFile = File(context.cacheDir,"cache")
-//            val cache = Cache(cacheFile,1024 *1024 *100)//100Mb
-//            cache(cache)
+            connectTimeout(60, TimeUnit.SECONDS) //连接 超时时间
+            writeTimeout(60, TimeUnit.SECONDS) //写操作 超时时间
+            readTimeout(60, TimeUnit.SECONDS) //读操作 超时时间
+            retryOnConnectionFailure(true) //错误重连
+            //            val cacheFile = File(context.cacheDir,"cache")
+            //            val cache = Cache(cacheFile,1024 *1024 *100)//100Mb
+            //            cache(cache)
 
             if (com.basic.network.BuildConfig.DEBUG) {
                 val httpInterceptor = HttpLoggingInterceptor {
@@ -82,7 +81,7 @@ abstract class BaseRepository<DATA, SERVICE> {
 
     protected abstract fun serviceClass(): Class<SERVICE>
 
-    protected abstract fun <T> validateData(data: DATA?): Result<T>
+    protected abstract fun <T> validateData(data: DATA?): CustomResult<T>
 
     protected abstract fun catchException(e: Throwable): Err
 
@@ -102,7 +101,7 @@ abstract class BaseRepository<DATA, SERVICE> {
         return null
     }
 
-    protected suspend fun <T> fetchDataBySuspend(call: suspend SERVICE.() -> DATA): Result<T> {
+    protected suspend fun <T> fetchDataBySuspend(call: suspend SERVICE.() -> DATA): CustomResult<T> {
         val response: DATA
         try {
             response = call(requestService)
@@ -112,9 +111,9 @@ abstract class BaseRepository<DATA, SERVICE> {
         return validateData(response)
     }
 
-    protected fun <T> fetchDataByCall(
+    protected inline fun <reified T> fetchDataByCall(
         callback: SimpleCallback<T>,
-        call: SERVICE.() -> Call<*>
+        crossinline call: SERVICE.() -> Call<*>
     ) {
         (call(requestService) as? Call<DATA>)?.enqueue(object : Callback<DATA> {
             override fun onResponse(call: Call<DATA>, response: Response<DATA>) {
@@ -123,6 +122,17 @@ abstract class BaseRepository<DATA, SERVICE> {
                     callback.onErr(it.code, it.msg)
                 }.onResult {
                     callback.onSuccess(it)
+                }
+
+
+                validateData<T>(response.body()).result {
+                    onErr {
+                        callback.onErr(it.code, it.msg)
+                    }
+
+                    onSuccess {
+                        callback.onSuccess(it)
+                    }
                 }
             }
 

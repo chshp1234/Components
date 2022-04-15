@@ -8,9 +8,7 @@ import okio.Timeout
 import retrofit2.*
 import java.lang.reflect.*
 import java.util.*
-import com.basic.network.data.Result
-import java.io.IOException
-import java.net.SocketException
+import com.basic.network.data.CustomResult
 
 /**
  * created by dongdaqing 2021/9/26 5:26 下午
@@ -34,7 +32,7 @@ class MyResultCallAdapterFactory : CallAdapter.Factory() {
 
         val resultType = getParameterUpperBound(0, returnType)
 
-        if (Result::class.java != getRawType(resultType)) {
+        if (CustomResult::class.java != getRawType(resultType)) {
             return null
         }
 
@@ -161,7 +159,7 @@ class ParameterizedTypeImpl(
 
 }
 
-class ApiResultCall(private val delegate: Call<Base<*>>) : Call<Result<*>> {
+class ApiResultCall(private val delegate: Call<Base<*>>) : Call<CustomResult<*>> {
     /**
      * 该方法会被Retrofit处理suspend方法的代码调用，并传进来一个callback,如果你回调了callback.onResponse，那么suspend方法就会成功返回
      * 如果你回调了callback.onFailure那么suspend方法就会抛异常
@@ -169,7 +167,7 @@ class ApiResultCall(private val delegate: Call<Base<*>>) : Call<Result<*>> {
      * 所以我们这里的实现是永远回调callback.onResponse,只不过在请求成功的时候返回的是ApiResult.Success对象，
      * 在失败的时候返回的是ApiResult.Failure对象，这样外面在调用suspend方法的时候就不会抛异常，一定会返回ApiResult.Success 或 ApiResult.Failure
      */
-    override fun enqueue(callback: Callback<Result<*>>) {
+    override fun enqueue(callback: Callback<CustomResult<*>>) {
         //delegate 是用来做实际的网络请求的Call<T>对象，网络请求的成功失败会回调不同的方法
         delegate.enqueue(object : Callback<Base<*>> {
 
@@ -229,9 +227,9 @@ class ApiResultCall(private val delegate: Call<Base<*>>) : Call<Result<*>> {
         })
     }
 
-    override fun clone(): Call<Result<*>> = ApiResultCall(delegate.clone())
+    override fun clone(): Call<CustomResult<*>> = ApiResultCall(delegate.clone())
 
-    override fun execute(): Response<Result<*>> {
+    override fun execute(): Response<CustomResult<*>> {
         throw UnsupportedOperationException("ApiResultCall does not support synchronous execution")
     }
 
