@@ -21,5 +21,5 @@ interface RequestService {
 
     @FormUrlEncoded
     @POST("clouduser/word/v1/queryWord")
-    fun fetchDataCall(@FieldMap fields: Map<String, String>): Call<WordDetail>
+    fun fetchDataCall(@FieldMap fields: Map<String, String>): Call<Base<WordDetail>>
 }

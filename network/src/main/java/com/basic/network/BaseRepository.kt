@@ -81,7 +81,7 @@ abstract class BaseRepository<DATA, SERVICE> {
 
     protected abstract fun serviceClass(): Class<SERVICE>
 
-    protected abstract fun <T> validateData(data: DATA?): CustomResult<T>
+    protected abstract fun validateData(data: DATA): CustomResult<Any?>
 
     protected abstract fun catchException(e: Throwable): Err
 
@@ -108,7 +108,7 @@ abstract class BaseRepository<DATA, SERVICE> {
         } catch (e: Throwable) {
             return catchException(e)
         }
-        return validateData(response)
+        return validateData(response) as CustomResult<T>
     }
 
     protected inline fun <reified T> fetchDataByCall(
@@ -117,30 +117,50 @@ abstract class BaseRepository<DATA, SERVICE> {
     ) {
         (call(requestService) as? Call<DATA>)?.enqueue(object : Callback<DATA> {
             override fun onResponse(call: Call<DATA>, response: Response<DATA>) {
+                val body = response.body()
+                if (body == null) {
+                    val invocation = call.request().tag(Invocation::class.java)!!
+                    val method = invocation.method()
+                    val e = KotlinNullPointerException(
+                        "Response from " +
+                        method.declaringClass.name +
+                        '.' +
+                        method.name +
+                        " was null but response body type was declared as non-null"
+                    )
+                    val catchException = `access$catchException`(e)
+                    callback.onErr(catchException.code, catchException.msg)
+                } else {
 
-                validateData<T>(response.body()).catch {
-                    callback.onErr(it.code, it.msg)
-                }.onResult {
-                    callback.onSuccess(it)
-                }
+                    /*`access$validateData`(body).catch { err ->
+                        callback.onErr(err.code, err.msg)
+                    }.onResult { data ->
+                        callback.onSuccess(data as T)
+                    }*/
 
+                    `access$validateData`(body).result {
+                        onErr { err ->
+                            callback.onErr(err.code, err.msg)
+                        }
 
-                validateData<T>(response.body()).result {
-                    onErr {
-                        callback.onErr(it.code, it.msg)
-                    }
-
-                    onSuccess {
-                        callback.onSuccess(it)
+                        onSuccess { data ->
+                            callback.onSuccess(data as T)
+                        }
                     }
                 }
             }
 
             override fun onFailure(call: Call<DATA>, t: Throwable) {
-                val err = catchException(t)
+                val err = `access$catchException`(t)
                 callback.onErr(err.code, err.msg)
             }
         }) ?: throw Throwable("call type not match")
     }
 
+
+    @PublishedApi
+    internal fun `access$validateData`(data: DATA) = validateData(data)
+
+    @PublishedApi
+    internal fun `access$catchException`(e: Throwable) = catchException(e)
 }

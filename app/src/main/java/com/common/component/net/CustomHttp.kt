@@ -72,16 +72,12 @@ object CustomHttp : BaseRepository<Base<*>, RequestService>() {
         return listOf(MyResultCallAdapterFactory())
     }
 
-    override fun <T> validateData(data: Base<*>?): CustomResult<T> {
-        if (data == null) {
-            return Err("0000", "body is null")
+    override fun validateData(data: Base<*>): CustomResult<Any?> {
+        if (data.status != "true") {
+            return Err(data.code, data.message)
         }
 
-        (data.data as? T)?.let {
-            return Success(it)
-        }
-
-        return Err(data.code!!, data.message)
+        return Success(data.data)
     }
 
     override fun catchException(e: Throwable): Err {
