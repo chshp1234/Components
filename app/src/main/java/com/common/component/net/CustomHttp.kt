@@ -16,7 +16,7 @@ object CustomHttp : BaseRepository<Base<*>, RequestService>() {
 
     suspend fun getTranslateBySuspendResult(word: String): CustomResult<WordDetail> {
         return fetchDataBySuspendResult {
-            requestService.getTranslateResult(
+            getTranslateResult(
                 mapOf(
                     "word" to word,
                     "uid" to "U202101294007036503493",
@@ -56,8 +56,8 @@ object CustomHttp : BaseRepository<Base<*>, RequestService>() {
         }
     }
 
-    private suspend fun <T> fetchDataBySuspendResult(call: suspend () -> CustomResult<T>): CustomResult<T> {
-        return call()
+    private suspend fun <T> fetchDataBySuspendResult(call: suspend RequestService.() -> CustomResult<T>): CustomResult<T> {
+        return call(requestService)
     }
 
     override fun baseUrl(): String {
