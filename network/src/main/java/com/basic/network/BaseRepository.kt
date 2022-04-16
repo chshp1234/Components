@@ -8,12 +8,13 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.*
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.reflect.ParameterizedType
 import java.util.concurrent.TimeUnit
 
 abstract class BaseRepository<DATA, SERVICE> {
 
     protected val requestService: SERVICE by lazy(LazyThreadSafetyMode.SYNCHRONIZED) {
-        getRetrofit().create(serviceClass())
+        getRetrofit().create(getServiceClass())
     }
 
     private fun getOkHttpClientBuilder(): OkHttpClient.Builder {
@@ -22,9 +23,9 @@ abstract class BaseRepository<DATA, SERVICE> {
             writeTimeout(60, TimeUnit.SECONDS) //写操作 超时时间
             readTimeout(60, TimeUnit.SECONDS) //读操作 超时时间
             retryOnConnectionFailure(true) //错误重连
-            //            val cacheFile = File(context.cacheDir,"cache")
-            //            val cache = Cache(cacheFile,1024 *1024 *100)//100Mb
-            //            cache(cache)
+            // val cacheFile = File(context.cacheDir,"cache")
+            // val cache = Cache(cacheFile,1024 *1024 *100)//100Mb
+            // cache(cache)
 
             if (com.basic.network.BuildConfig.DEBUG) {
                 val httpInterceptor = HttpLoggingInterceptor {
@@ -77,9 +78,26 @@ abstract class BaseRepository<DATA, SERVICE> {
             .build()
     }
 
-    protected abstract fun baseUrl(): String
+    private fun getServiceClass(): Class<SERVICE> {
+        var serviceClass: Class<SERVICE>? = null
+        val type = javaClass.genericSuperclass
+        if (type is ParameterizedType) {
+            val actualTypeArguments = type.actualTypeArguments;
+            if (actualTypeArguments.isNotEmpty()) {
+                (actualTypeArguments[1] as? Class<SERVICE>)?.let {
+                    serviceClass = it
+                }
 
-    protected abstract fun serviceClass(): Class<SERVICE>
+            }
+        }
+
+        return serviceClass?.run {
+            return this
+        } ?: throw ClassNotFoundException("service not found")
+
+    }
+
+    protected abstract fun baseUrl(): String
 
     protected abstract fun validateData(data: DATA): CustomResult<Any?>
 
@@ -123,10 +141,10 @@ abstract class BaseRepository<DATA, SERVICE> {
                     val method = invocation.method()
                     val e = KotlinNullPointerException(
                         "Response from " +
-                        method.declaringClass.name +
-                        '.' +
-                        method.name +
-                        " was null but response body type was declared as non-null"
+                                method.declaringClass.name +
+                                '.' +
+                                method.name +
+                                " was null but response body type was declared as non-null"
                     )
                     val catchException = `access$catchException`(e)
                     callback.onErr(catchException.code, catchException.msg)

@@ -64,10 +64,6 @@ object CustomHttp : BaseRepository<Base<*>, RequestService>() {
         return "https://qagateway.ellabook.cn/rest/api/service/"
     }
 
-    override fun serviceClass(): Class<RequestService> {
-        return RequestService::class.java
-    }
-
     override fun customCallAdapter(): List<CallAdapter.Factory> {
         return listOf(MyResultCallAdapterFactory())
     }
