@@ -79,22 +79,9 @@ abstract class BaseRepository<DATA, SERVICE> {
     }
 
     private fun getServiceClass(): Class<SERVICE> {
-        var serviceClass: Class<SERVICE>? = null
-        val type = javaClass.genericSuperclass
-        if (type is ParameterizedType) {
-            val actualTypeArguments = type.actualTypeArguments;
-            if (actualTypeArguments.isNotEmpty()) {
-                (actualTypeArguments[1] as? Class<SERVICE>)?.let {
-                    serviceClass = it
-                }
-
-            }
-        }
-
-        return serviceClass?.run {
-            return this
-        } ?: throw ClassNotFoundException("service not found")
-
+        val type = (javaClass.genericSuperclass as ParameterizedType)
+        val actualTypeArguments = type.actualTypeArguments
+        return (actualTypeArguments[1] as Class<SERVICE>)
     }
 
     protected abstract fun baseUrl(): String
@@ -133,7 +120,8 @@ abstract class BaseRepository<DATA, SERVICE> {
         callback: SimpleCallback<T>,
         crossinline call: SERVICE.() -> Call<*>
     ) {
-        (call(requestService) as? Call<DATA>)?.enqueue(object : Callback<DATA> {
+        val call = call(requestService)
+        (call as? Call<DATA>)?.enqueue(object : Callback<DATA> {
             override fun onResponse(call: Call<DATA>, response: Response<DATA>) {
                 val body = response.body()
                 if (body == null) {
