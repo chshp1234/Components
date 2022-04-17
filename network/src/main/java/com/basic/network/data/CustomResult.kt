@@ -6,7 +6,7 @@ package com.basic.network.data
 sealed class CustomResult<out T> {
 
     var err: ((Err) -> Unit)? = null
-    var success: ((Any) -> Unit)? = null
+    var success: ((Any?) -> Unit)? = null
 
     fun catch(onErr: ((Err) -> Unit)? = null): CustomResult<T> {
         if (this is Err) {
@@ -18,7 +18,7 @@ sealed class CustomResult<out T> {
     inline fun onResult(onSuccess: (T) -> Unit) {
         when (this) {
             is Success -> onSuccess(result)
-            is Err     -> err?.invoke(this)
+            is Err -> err?.invoke(this)
         }
     }
 
@@ -27,7 +27,7 @@ sealed class CustomResult<out T> {
     ) {
         when (this) {
             is Success -> onSuccess(result)
-            is Err     -> onErr?.invoke(this)
+            is Err -> onErr?.invoke(this)
         }
     }
 }
@@ -46,7 +46,7 @@ fun <T> CustomResult<T>.result(call: CustomResult<T>.() -> Unit) {
 
     when (this) {
         is Success -> success?.invoke(result as Any)
-        is Err     -> err?.invoke(this)
+        is Err -> err?.invoke(this)
     }
 }
 
@@ -55,5 +55,5 @@ fun CustomResult<*>.onErr(err: ((Err) -> Unit)? = null) {
 }
 
 fun <T> CustomResult<T>.onSuccess(success: ((T) -> Unit)? = null) {
-    this.success = success as ((Any) -> Unit)?
+    this.success = success as ((Any?) -> Unit)?
 }
