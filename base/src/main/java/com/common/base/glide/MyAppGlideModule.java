@@ -40,7 +40,7 @@ public final class MyAppGlideModule extends AppGlideModule {
     public void applyOptions(@NonNull Context context, @NonNull GlideBuilder builder) {
         builder.setDefaultRequestOptions(
                 new RequestOptions().format(DecodeFormat.PREFER_ARGB_8888));
-        if (com.common.base.glide.BuildConfig.DEBUG) {
+        if (com.common.base.BuildConfig.DEBUG) {
             builder.setLogLevel(Log.DEBUG);
         }
     }

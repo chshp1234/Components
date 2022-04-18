@@ -5,7 +5,7 @@ package com.basic.network
  */
 fun interface SimpleCallback<T> {
 
-    fun onSuccess(data: T)
+    fun onSuccess(data: T?)
 
     fun onErr(code: String, msg: String?) {}
 }

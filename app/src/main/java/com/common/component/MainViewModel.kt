@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.basic.network.SimpleCallback
 import com.basic.network.data.Err
+import com.basic.network.data.result
 import com.blankj.utilcode.util.LogUtils
 import com.common.component.net.CustomHttp
 import com.common.component.net.WordDetail
@@ -18,22 +19,22 @@ import kotlinx.coroutines.flow.flow
  */
 class MainViewModel : ViewModel() {
 
-    private val onDataSuccess: MutableLiveData<WordDetail> = MutableLiveData()
+    private val onDataSuccess: MutableLiveData<WordDetail?> = MutableLiveData()
     private val onDataErr: MutableLiveData<Err> = MutableLiveData()
 
-    val successLiveData: LiveData<WordDetail> = onDataSuccess
+    val successLiveData: LiveData<WordDetail?> = onDataSuccess
     val errLiveData: LiveData<Err> = onDataErr
 
     fun getData(word: String) {
         viewModelScope.launch {
             //1.
-            //            CustomHttp.getTranslateBySuspend(word)
-            //                .catch { onDataErr.value = it }
-            //                .onResult { onDataSuccess.value = it }
+            CustomHttp.getTranslateBySuspend(word)
+                .catch { onDataErr.value = it }
+                .onResult { onDataSuccess.value = it }
 
             //2.
             CustomHttp.getTranslate(word, object : SimpleCallback<WordDetail> {
-                override fun onSuccess(data: WordDetail) {
+                override fun onSuccess(data: WordDetail?) {
                     onDataSuccess.value = data
                 }
 
@@ -44,20 +45,20 @@ class MainViewModel : ViewModel() {
             })
 
             //3.
-            //            CustomHttp.getTranslateBySuspend(word).result {
-            //                onErr {
-            //                    onDataErr.value = it
-            //                }
-            //
-            //                onSuccess {
-            //                    onDataSuccess.value = it
-            //                }
-            //            }
+            CustomHttp.getTranslateBySuspend(word).result {
+                onErr {
+                    onDataErr.value = it
+                }
+
+                onSuccess {
+                    onDataSuccess.value = it
+                }
+            }
 
             //4.
-            //            CustomHttp.getTranslateBySuspend(word).onResult({ onDataErr.value = it }) {
-            //                onDataSuccess.value = it
-            //            }
+            CustomHttp.getTranslateBySuspend(word).onResult({ onDataErr.value = it }) {
+                onDataSuccess.value = it
+            }
         }
     }
 

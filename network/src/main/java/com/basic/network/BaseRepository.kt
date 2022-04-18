@@ -150,7 +150,7 @@ abstract class BaseRepository<DATA, SERVICE> {
                         }
 
                         onSuccess { data ->
-                            callback.onSuccess(data as T)
+                            callback.onSuccess(data as T?)
                         }
                     }
                 }

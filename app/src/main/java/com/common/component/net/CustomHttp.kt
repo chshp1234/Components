@@ -69,9 +69,9 @@ object CustomHttp : BaseRepository<Base<*>, RequestService>() {
     }
 
     override fun validateData(data: Base<*>): CustomResult<Any?> {
-        if (data.status != "true") {
-            return Err(data.code, data.message)
-        }
+//        if (data.status != "true") {
+//            return Err(data.code, data.message)
+//        }
 
         return Success(data.data)
     }

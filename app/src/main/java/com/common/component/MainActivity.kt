@@ -1,8 +1,6 @@
 package com.common.component
 
 import android.os.Bundle
-import android.os.Looper
-import android.os.PersistableBundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
@@ -21,6 +19,9 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(this).get()
         viewModel.errLiveData.observe(this) {
             ToastUtils.showShort(it.toString())
+        }
+        viewModel.successLiveData.observe(this) {
+            ToastUtils.showShort(it?.toString())
         }
         viewModel.getData("aaa")
     }
