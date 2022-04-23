@@ -47,7 +47,6 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0"
     implementation group: 'org.jetbrains.kotlinx', name: 'kotlinx-coroutines-android', version: '1.6.0'
 
-    implementation 'com.blankj:utilcodex:1.31.0'
     implementation 'com.google.code.gson:gson:2.9.0'
 
     implementation 'androidx.core:core-ktx:1.6.0'
@@ -59,4 +58,5 @@ dependencies {
     implementation project(':widget')
     implementation project(':network')
     implementation project(':base')
+    implementation project(':utils')
 }

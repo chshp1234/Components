@@ -1,6 +1,8 @@
 package com.common.utils;
 
 
+import static android.graphics.ImageFormat.FLEX_RGBA_8888;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -37,9 +39,9 @@ import java.nio.ByteBuffer;
 
 /** The type Screen shot utils. */
 public class ScreenShotUtils {
-    public static final  String APP_PIC                  =
+    private static final String APP_PIC                  =
             Environment.getExternalStorageDirectory().getAbsolutePath()
-                    + File.separator + "picture";
+            + File.separator + "picture";
     private static final int    REQUEST_SCREEN_SHOT_CODE = 10;
 
     private int screenDensity;
@@ -82,22 +84,22 @@ public class ScreenShotUtils {
     }
 
     /**
-     <b>截屏前需要进行权限申请</b><br>
-     其中，需要使用startActivityForResult的唯一原因是，捕捉屏幕是需要用户确认权限才可以， 这个权限对应的对话框就是由{@link
-    MediaProjectionManager#createScreenCaptureIntent()
-    createScreenCaptureIntent()}创建的， 在用户点击允许之后，在onActivityResult得到确认码，才可以拿到MediaProjection对象。
+     * <b>截屏前需要进行权限申请</b><br>
+     * 其中，需要使用startActivityForResult的唯一原因是，捕捉屏幕是需要用户确认权限才可以， 这个权限对应的对话框就是由{@link
+     * MediaProjectionManager#createScreenCaptureIntent()
+     * createScreenCaptureIntent()}创建的， 在用户点击允许之后，在onActivityResult得到确认码，才可以拿到MediaProjection对象。
      */
-    public void requestCapturePermission() {
+    private void requestCapturePermission() {
 
         PermissionScreenShotActivity.startRequest(Utils.getApp());
     }
 
     /**
-     Init. 在onActivityResult得到确认码时，赋予mResultData返回的intent
-
-     @param mResultData the m result data
+     * Init. 在onActivityResult得到确认码时，赋予mResultData返回的intent
+     *
+     * @param mResultData the m result data
      */
-    public void init(Intent mResultData) {
+    private void init(Intent mResultData) {
         this.mResultData = mResultData;
     }
 
@@ -105,11 +107,6 @@ public class ScreenShotUtils {
     private void setUpMediaProjection() {
         if (mResultData == null) {
             requestCapturePermission();
-            /*Intent intent = new Intent(Intent.ACTION_MAIN);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.setClass(Utils.getApp(), MainActivity.class);
-            Utils.getApp().startActivity(intent);*/
         } else {
             if (mediaProjection == null) {
                 mediaProjection =
@@ -134,7 +131,7 @@ public class ScreenShotUtils {
 
     // 使用newInstance方法实例化一个ImageReader
     private void createImageReader() {
-        imageReader = ImageReader.newInstance(screenWidth, screenHeight, PixelFormat.RGBA_8888, 2);
+        imageReader = ImageReader.newInstance(screenWidth, screenHeight, FLEX_RGBA_8888, 2);
     }
 
     /** Begin screen shot. */
@@ -152,7 +149,7 @@ public class ScreenShotUtils {
                                 beginVirtual();
                             },
                             0
-                    );
+                                       );
 
                     handler.postDelayed(
                             () -> {
@@ -160,7 +157,7 @@ public class ScreenShotUtils {
                                 beginCapture();
                             },
                             150
-                    );
+                                       );
                 } catch (Exception e) {
                     LogUtils.e(e);
                 }
@@ -242,7 +239,7 @@ public class ScreenShotUtils {
                         surface,
                         null,
                         null
-                );
+                                                    );
     }
 
     private MediaProjectionManager getMediaProjectionManager() {
@@ -254,11 +251,11 @@ public class ScreenShotUtils {
         return mediaProjectionManager;
     }
 
-    public interface Callback {
+    private interface Callback {
         void getPath(String path);
     }
 
-    public static Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
+    private static Handler MAIN_HANDLER = new Handler(Looper.getMainLooper());
 
     private String beginCapture(String path) {
         Image acquireLatestImage = null;
@@ -306,7 +303,7 @@ public class ScreenShotUtils {
                                 stopMediaProjection();
                             },
                             1000
-                    );
+                                );
         }
     }
 
@@ -338,7 +335,7 @@ public class ScreenShotUtils {
                         }
                     },
                     MAIN_HANDLER
-            );
+                                                   );
         } catch (IllegalStateException e) {
             LogUtils.e(e);
         }
@@ -381,7 +378,7 @@ public class ScreenShotUtils {
         // 这部分将Image对象的字节流写进Bitmap里，但是Bitmap接收的是像素格式的。
         // 先获取图片的buffer数据，然后要把这一行buffer包含的图片宽高找出来。
         final Image.Plane[] planes = image.getPlanes();
-        final ByteBuffer buffer = planes[0].getBuffer();
+        final ByteBuffer    buffer = planes[0].getBuffer();
         // 每个像素的间距。获取pixelStride。因为是RGBA4个通道，所以每个像素的间距是4。
         int pixelStride = planes[0].getPixelStride();
         // 总的间距（得到每行的宽度rowStride）
@@ -401,7 +398,7 @@ public class ScreenShotUtils {
                         SizeUtils.dp2px(24),
                         width,
                         height - SizeUtils.dp2px(24)
-                );
+                                   );
         image.close();
         File fileImage = null;
         if (null != bitmap) {
@@ -440,7 +437,7 @@ public class ScreenShotUtils {
 
         if (null != fileImage) {
             Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            Uri uri = Uri.fromFile(new File(fileImage.getAbsolutePath()));
+            Uri    uri    = Uri.fromFile(new File(fileImage.getAbsolutePath()));
             intent.setData(uri);
             Utils.getApp().sendBroadcast(intent);
             return fileImage.getAbsolutePath();
@@ -482,7 +479,7 @@ public class ScreenShotUtils {
             // 这部分将Image对象的字节流写进Bitmap里，但是Bitmap接收的是像素格式的。
             // 先获取图片的buffer数据，然后要把这一行buffer包含的图片宽高找出来。
             final Image.Plane[] planes = image.getPlanes();
-            final ByteBuffer buffer = planes[0].getBuffer();
+            final ByteBuffer    buffer = planes[0].getBuffer();
             // 每个像素的间距。获取pixelStride。因为是RGBA4个通道，所以每个像素的间距是4。
             int pixelStride = planes[0].getPixelStride();
             // 总的间距（得到每行的宽度rowStride）
@@ -566,7 +563,7 @@ public class ScreenShotUtils {
             getWindow()
                     .addFlags(
                             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                                    | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
+                            | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH);
             if (screenShotUtils == null) {
                 super.onCreate(savedInstanceState);
                 Log.e("PermissionUtils", "request permissions failed");
@@ -579,7 +576,7 @@ public class ScreenShotUtils {
             startActivityForResult(
                     getInstance().getMediaProjectionManager().createScreenCaptureIntent(),
                     REQUEST_SCREEN_SHOT_CODE
-            );
+                                  );
         }
 
         @Override

@@ -10,6 +10,7 @@ import com.basic.network.data.result
 import com.blankj.utilcode.util.LogUtils
 import com.common.component.net.CustomHttp
 import com.common.component.net.WordDetail
+import com.common.utils.ScreenShotUtils
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -63,6 +64,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun test() {
+        ScreenShotUtils.getInstance().beginScreenShot()
         LogUtils.d("test start")
         viewModelScope.launch {
             LogUtils.d("coroutine start")
