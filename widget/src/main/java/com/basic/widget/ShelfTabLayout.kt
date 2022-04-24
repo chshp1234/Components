@@ -34,6 +34,11 @@ class ShelfTabLayout(
     private var currentChild: View? = null
     private var currentPosition = 0f
 
+    private var conjunctionAngleRate: Double = 0.0
+    private val conjunctionQuadRate = 3
+    private val conjunctionHeightRate = 6
+    private var conjunctionHeight = 0f
+
     private val animator = ValueAnimator.ofFloat().apply {
         addUpdateListener {
             updatePosition(it.animatedValue as Float)
@@ -49,7 +54,6 @@ class ShelfTabLayout(
         paint = Paint()
         paint.strokeWidth = 2f
         paint.color = Color.parseColor("#DDDDDD")
-        paint.color = Color.parseColor("#333333")
         paint.style = Paint.Style.STROKE
         paint.strokeJoin = Paint.Join.ROUND
 
@@ -81,14 +85,14 @@ class ShelfTabLayout(
 
     override fun setLayoutParams(params: ViewGroup.LayoutParams?) {
         when {
-            childCount == 0         -> {
+            childCount == 0 -> {
                 params?.width = 0
                 params?.height = 0
             }
             orientation == VERTICAL -> {
                 params?.height = MATCH_PARENT
             }
-            else                    -> {
+            else -> {
                 params?.width = MATCH_PARENT
             }
         }
@@ -118,6 +122,8 @@ class ShelfTabLayout(
 
             if (currentPosition == 0f) {
                 currentPosition = left.toFloat() + width / 2
+                conjunctionAngleRate = (width / conjunctionQuadRate) / bgRadius.toDouble()
+                conjunctionHeight = bgRadius / conjunctionHeightRate
             }
 
             isSelected = true
@@ -128,27 +134,30 @@ class ShelfTabLayout(
                 currentPosition - width / 2, (parent as ViewGroup).getChildAt(0).top.toFloat()
             )
 
-            val h = (parent as ViewGroup).getChildAt(0).top.toFloat() - (bgRadius / 6)
-            var x1 = currentPosition - (width / 3) - (h / sqrt(3.0))
+            var x = currentPosition - width / conjunctionQuadRate
+            val w = conjunctionHeight * conjunctionAngleRate
 
             border.quadTo(
-                x1.toFloat(),
+                x,
                 (parent as ViewGroup).getChildAt(0).top.toFloat(),
-                currentPosition - (width / 3),
-                h
+                (x + w).toFloat(),
+                (parent as ViewGroup).getChildAt(0).top.toFloat() - conjunctionHeight
+            )
+
+            x = currentPosition + width / conjunctionQuadRate
+
+            border.quadTo(
+                currentPosition,
+                -bgRadius,
+                (x - w).toFloat(),
+                (parent as ViewGroup).getChildAt(0).top.toFloat() - conjunctionHeight
             )
 
             border.quadTo(
-                currentPosition, -bgRadius,
-                currentPosition + (width / 3),
-                h
-            )
-
-            x1 = currentPosition + (width / 3) + (h / sqrt(3.0))
-            border.quadTo(
-                x1.toFloat(),
+                x,
                 (parent as ViewGroup).getChildAt(0).top.toFloat(),
-                currentPosition + width / 2, (parent as ViewGroup).getChildAt(0).top.toFloat()
+                currentPosition + width / 2,
+                (parent as ViewGroup).getChildAt(0).top.toFloat()
             )
 
             border.lineTo(
