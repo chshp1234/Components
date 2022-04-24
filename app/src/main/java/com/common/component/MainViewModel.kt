@@ -4,13 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.basic.network.SimpleCallback
 import com.basic.network.data.Err
 import com.basic.network.data.result
 import com.blankj.utilcode.util.LogUtils
 import com.common.component.net.CustomHttp
 import com.common.component.net.WordDetail
-import com.common.utils.ScreenShotUtils
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -27,44 +25,44 @@ class MainViewModel : ViewModel() {
     val errLiveData: LiveData<Err> = onDataErr
 
     fun getData(word: String) {
-        viewModelScope.launch {
-            //1.
-            CustomHttp.getTranslateBySuspend(word)
-                .catch { onDataErr.value = it }
-                .onResult { onDataSuccess.value = it }
-
-            //2.
-            CustomHttp.getTranslate(word, object : SimpleCallback<WordDetail> {
-                override fun onSuccess(data: WordDetail?) {
-                    onDataSuccess.value = data
-                }
-
-                override fun onErr(code: String, msg: String?) {
-
-                    onDataErr.value = Err(code, msg)
-                }
-            })
-
-            //3.
-            CustomHttp.getTranslateBySuspend(word).result {
-                onErr {
-                    onDataErr.value = it
-                }
-
+        //1.
+        CustomHttp.getTranslate(word) { call ->
+            call.result {
                 onSuccess {
                     onDataSuccess.value = it
                 }
-            }
 
-            //4.
-            CustomHttp.getTranslateBySuspend(word).onResult({ onDataErr.value = it }) {
-                onDataSuccess.value = it
+                onErr {
+                    onDataErr.value = it
+                }
             }
         }
+
+        //        viewModelScope.launch {
+        //            //2.
+        //            CustomHttp.getTranslateBySuspend(word)
+        //                .catch { onDataErr.value = it }
+        //                .onResult { onDataSuccess.value = it }
+        //
+        //            //3.
+        //            CustomHttp.getTranslateBySuspend(word).result {
+        //                onErr {
+        //                    onDataErr.value = it
+        //                }
+        //
+        //                onSuccess {
+        //                    onDataSuccess.value = it
+        //                }
+        //            }
+        //
+        //            //4.
+        //            CustomHttp.getTranslateBySuspend(word).onResult({ onDataErr.value = it }) {
+        //                onDataSuccess.value = it
+        //            }
+        //        }
     }
 
     fun test() {
-        ScreenShotUtils.getInstance().beginScreenShot()
         LogUtils.d("test start")
         viewModelScope.launch {
             LogUtils.d("coroutine start")

@@ -40,10 +40,7 @@ object CustomHttp : BaseRepository<Base<*>, RequestService>() {
         }
     }
 
-    fun getTranslate(
-        word: String,
-        callback: SimpleCallback<WordDetail>
-    ) {
+    fun getTranslate(word: String, callback: SimpleCallback<WordDetail>) {
         fetchDataByCall(callback) {
             fetchDataCall(
                 mapOf(

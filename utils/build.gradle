@@ -42,5 +42,5 @@ dependencies {
     implementation 'com.google.zxing:android-core:3.3.0'
     implementation 'com.google.zxing:core:3.4.1'
 
-    implementation 'com.blankj:utilcodex:1.31.0'
+    api 'com.blankj:utilcodex:1.31.0'
 }

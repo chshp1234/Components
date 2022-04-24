@@ -2,7 +2,8 @@ package com.basic.network
 
 import android.text.TextUtils
 import android.util.Log
-import com.basic.network.data.*
+import com.basic.network.data.CustomResult
+import com.basic.network.data.Err
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -124,27 +125,26 @@ abstract class BaseRepository<DATA, SERVICE> {
         (call as? Call<DATA>)?.enqueue(object : Callback<DATA> {
             override fun onResponse(call: Call<DATA>, response: Response<DATA>) {
                 val body = response.body()
-                if (body == null) {
+
+                val result = if (body == null) {
                     val invocation = call.request().tag(Invocation::class.java)!!
                     val method = invocation.method()
                     val e = KotlinNullPointerException(
                         "Response from " +
-                                method.declaringClass.name +
-                                '.' +
-                                method.name +
-                                " was null but response body type was declared as non-null"
+                        method.declaringClass.name +
+                        '.' +
+                        method.name +
+                        " was null but response body type was declared as non-null"
                     )
-                    val catchException = `access$catchException`(e)
-                    callback.onErr(catchException.code, catchException.msg)
+                    catchExceptionInternal(e)
                 } else {
-
-                    /*`access$validateData`(body).catch { err ->
+                    /*validateDataInternal(body).catch { err ->
                         callback.onErr(err.code, err.msg)
                     }.onResult { data ->
                         callback.onSuccess(data as T)
                     }*/
 
-                    `access$validateData`(body).result {
+                    /*validateDataInternal(body).result {
                         onErr { err ->
                             callback.onErr(err.code, err.msg)
                         }
@@ -152,21 +152,23 @@ abstract class BaseRepository<DATA, SERVICE> {
                         onSuccess { data ->
                             callback.onSuccess(data as T?)
                         }
-                    }
+                    }*/
+                    validateDataInternal(body) as CustomResult<T>
                 }
+
+                callback.onCallBack(result)
             }
 
             override fun onFailure(call: Call<DATA>, t: Throwable) {
-                val err = `access$catchException`(t)
-                callback.onErr(err.code, err.msg)
+                callback.onCallBack(catchExceptionInternal(t))
             }
         }) ?: throw Throwable("call type not match")
     }
 
 
     @PublishedApi
-    internal fun `access$validateData`(data: DATA) = validateData(data)
+    internal fun validateDataInternal(data: DATA) = validateData(data)
 
     @PublishedApi
-    internal fun `access$catchException`(e: Throwable) = catchException(e)
+    internal fun catchExceptionInternal(e: Throwable) = catchException(e)
 }

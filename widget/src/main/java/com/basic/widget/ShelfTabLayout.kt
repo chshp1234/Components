@@ -2,12 +2,17 @@ package com.basic.widget
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.*
+import android.content.res.Resources
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Path
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
+import kotlin.math.sqrt
 
 
 class ShelfTabLayout(
@@ -19,7 +24,7 @@ class ShelfTabLayout(
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attributeSet: AttributeSet?) : this(context, attributeSet, 0)
 
-    private val bgRadius: Int
+    private val bgRadius: Float
 
     private val paint: Paint
     private val border: Path
@@ -27,12 +32,11 @@ class ShelfTabLayout(
     private val clearPaint: Paint
 
     private var currentChild: View? = null
-    private var MODE_CLEAR = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
-    private var MODE_SRC = PorterDuffXfermode(PorterDuff.Mode.SRC)
+    private var currentPosition = 0f
 
-    private val animator = ValueAnimator.ofInt().apply {
+    private val animator = ValueAnimator.ofFloat().apply {
         addUpdateListener {
-            setBounds(it.animatedValue as Int)
+            updatePosition(it.animatedValue as Float)
         }
     }
 
@@ -40,14 +44,16 @@ class ShelfTabLayout(
 
     init {
         val array = context.obtainStyledAttributes(attrs, R.styleable.ShelfTabLayout)
-        bgRadius = array.getInt(R.styleable.ShelfTabLayout_bgRadius, 0)
+        bgRadius = array.getInt(R.styleable.ShelfTabLayout_bgRadius, 0).dp2px()
 
         paint = Paint()
         paint.strokeWidth = 2f
+        paint.color = Color.parseColor("#DDDDDD")
         paint.color = Color.parseColor("#333333")
         paint.style = Paint.Style.STROKE
         paint.strokeJoin = Paint.Join.ROUND
-//        paint.setShadowLayer(1f, 1f, -1f, Color.parseColor("#efefef"))
+
+        //        paint.setShadowLayer(2f, 1f, 1f, Color.parseColor("#efefef"))
 
         clearPaint = Paint()
 
@@ -56,7 +62,7 @@ class ShelfTabLayout(
         array.recycle()
         setWillNotDraw(false)
 
-//        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        //        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
     }
 
     override fun addView(child: View?, index: Int, params: ViewGroup.LayoutParams?) {
@@ -67,6 +73,7 @@ class ShelfTabLayout(
         param?.run {
             if (checked) {
                 currentChild = child
+
             }
         }
         child?.setOnClickListener(this)
@@ -74,14 +81,14 @@ class ShelfTabLayout(
 
     override fun setLayoutParams(params: ViewGroup.LayoutParams?) {
         when {
-            childCount == 0 -> {
+            childCount == 0         -> {
                 params?.width = 0
                 params?.height = 0
             }
             orientation == VERTICAL -> {
                 params?.height = MATCH_PARENT
             }
-            else -> {
+            else                    -> {
                 params?.width = MATCH_PARENT
             }
         }
@@ -90,14 +97,13 @@ class ShelfTabLayout(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         super.onLayout(changed, l, t, r, b)
     }
-
-    var layerId: Int? = null
 
     override fun onDraw(canvas: Canvas) {
 
@@ -108,32 +114,43 @@ class ShelfTabLayout(
             currentChild = getChildAt(0)
         }
 
-//        if (layerId == null) {
-//            layerId = canvas.saveLayer(
-//                (parent as ViewGroup).top.toFloat(), (parent as ViewGroup).top.toFloat(),
-//                (parent as ViewGroup).right.toFloat(), (parent as ViewGroup).bottom.toFloat(), null
-//            )
-//        }
-
         currentChild?.run {
 
-//            paint.xfermode = MODE_CLEAR
-//            canvas.drawRect(0f, 0f, 300f, 300f, paint)
-//            paint.xfermode = MODE_SRC
-
-//            layerId?.let {
-//                canvas.restoreToCount(it)
-//            }
+            if (currentPosition == 0f) {
+                currentPosition = left.toFloat() + width / 2
+            }
 
             isSelected = true
 
             border.reset()
             border.moveTo(0f, (parent as ViewGroup).getChildAt(0).top.toFloat())
-            border.lineTo(left.toFloat(), (parent as ViewGroup).getChildAt(0).top.toFloat())
-            border.quadTo(
-                left.toFloat() + width / 2, -bgRadius * 10f,
-                left.toFloat() + width, (parent as ViewGroup).getChildAt(0).top.toFloat()
+            border.lineTo(
+                currentPosition - width / 2, (parent as ViewGroup).getChildAt(0).top.toFloat()
             )
+
+            val h = (parent as ViewGroup).getChildAt(0).top.toFloat() - (bgRadius / 6)
+            var x1 = currentPosition - (width / 3) - (h / sqrt(3.0))
+
+            border.quadTo(
+                x1.toFloat(),
+                (parent as ViewGroup).getChildAt(0).top.toFloat(),
+                currentPosition - (width / 3),
+                h
+            )
+
+            border.quadTo(
+                currentPosition, -bgRadius,
+                currentPosition + (width / 3),
+                h
+            )
+
+            x1 = currentPosition + (width / 3) + (h / sqrt(3.0))
+            border.quadTo(
+                x1.toFloat(),
+                (parent as ViewGroup).getChildAt(0).top.toFloat(),
+                currentPosition + width / 2, (parent as ViewGroup).getChildAt(0).top.toFloat()
+            )
+
             border.lineTo(
                 (parent as ViewGroup).width.toFloat(),
                 (parent as ViewGroup).getChildAt(0).top.toFloat()
@@ -143,8 +160,6 @@ class ShelfTabLayout(
         }
 
         super.onDraw(canvas)
-
-        //        drawBackGround(canvas)
     }
 
     override fun onClick(v: View) {
@@ -156,49 +171,28 @@ class ShelfTabLayout(
         currentChild = v
 
         invalidate()
-        /*for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            if (child.isSelected)
-                selected = child
+
+        val target = v.left.toFloat() + v.width / 2
+
+        if (animator.isRunning) {
+            animator.cancel()
         }
 
-        val target = (v.top + v.bottom) / 2
-        if (selected == null) {
-            setBounds(target)
+        if (animator.animatedValue == null) {
+            animator.setFloatValues(currentPosition, target)
         } else {
-            if (animator.isRunning) {
-                animator.cancel()
-            }
-            if (animator.animatedValue == null) {
-                animator.setIntValues((selected.top + selected.bottom) / 2, target)
-            } else {
-                animator.setIntValues(animator.animatedValue as Int, target)
-            }
-            animator.start()
+            animator.setFloatValues(animator.animatedValue as Float, target)
         }
-
-        if (!fake && selected == v)
-            return
-
-        for (i in 0 until childCount) {
-            val child = getChildAt(i)
-            child.isSelected = child == v
-        }*/
+        animator.start()
 
         listener?.onClick(v)
     }
 
-    private fun setBounds(position: Int) {
-        if (width > 0 && position > 0) {
-            val left = (width - bgRadius) / 2
-            val top = position - bgRadius / 2
+    private fun updatePosition(position: Float) {
+        currentPosition = position
 
-            invalidate()
-        }
-    }
+        invalidate()
 
-    fun getDrawableRadius(): Int {
-        return bgRadius
     }
 
     override fun generateLayoutParams(attrs: AttributeSet?): LayoutParams {
@@ -232,6 +226,22 @@ class ShelfTabLayout(
         param.weight = 1f
 
         return param
+    }
+
+    fun Int.dp2px(): Float {
+        val scale = Resources.getSystem().displayMetrics.density
+        return this * scale + 0.5f
+    }
+
+    /**
+     * Value of px to value of dp.
+     *
+     * @param pxValue The value of px.
+     * @return value of dp
+     */
+    fun Int.px2dp(): Float {
+        val scale = Resources.getSystem().displayMetrics.density
+        return this / scale + 0.5f
     }
 }
 

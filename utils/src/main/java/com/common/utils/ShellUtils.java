@@ -7,15 +7,18 @@ import java.io.InputStreamReader;
 
 public class ShellUtils {
     private static final String LINE_SEP = System.getProperty("line.separator");
-    public static CommandResult execCmd(String[] commands, boolean isRooted, boolean isNeedResultMsg) {
+
+    public static CommandResult execCmd(String[] commands,
+                                        boolean isRooted,
+                                        boolean isNeedResultMsg) {
         int result = -1;
         if (commands != null && commands.length != 0) {
-            Process          process       = null;
-            BufferedReader   successResult = null;
-            BufferedReader   errorResult   = null;
-            StringBuilder    successMsg    = null;
-            StringBuilder    errorMsg      = null;
-            DataOutputStream os            = null;
+            Process process = null;
+            BufferedReader successResult = null;
+            BufferedReader errorResult = null;
+            StringBuilder successMsg = null;
+            StringBuilder errorMsg = null;
+            DataOutputStream os = null;
 
             try {
                 process = Runtime.getRuntime().exec(isRooted ? "su" : "sh");
@@ -23,7 +26,7 @@ public class ShellUtils {
                 String[] var10 = commands;
                 int var11 = commands.length;
 
-                for(int var12 = 0; var12 < var11; ++var12) {
+                for (int var12 = 0; var12 < var11; ++var12) {
                     String command = var10[var12];
                     if (command != null) {
                         os.write(command.getBytes());
@@ -38,13 +41,17 @@ public class ShellUtils {
                 if (isNeedResultMsg) {
                     successMsg = new StringBuilder();
                     errorMsg = new StringBuilder();
-                    successResult = new BufferedReader(new InputStreamReader(process.getInputStream(), "UTF-8"));
-                    errorResult = new BufferedReader(new InputStreamReader(process.getErrorStream(), "UTF-8"));
+                    successResult =
+                            new BufferedReader(new InputStreamReader(process.getInputStream(),
+                                    "UTF-8"));
+                    errorResult =
+                            new BufferedReader(new InputStreamReader(process.getErrorStream(),
+                                    "UTF-8"));
                     String line;
                     if ((line = successResult.readLine()) != null) {
                         successMsg.append(line);
 
-                        while((line = successResult.readLine()) != null) {
+                        while ((line = successResult.readLine()) != null) {
                             successMsg.append(LINE_SEP).append(line);
                         }
                     }
@@ -52,7 +59,7 @@ public class ShellUtils {
                     if ((line = errorResult.readLine()) != null) {
                         errorMsg.append(line);
 
-                        while((line = errorResult.readLine()) != null) {
+                        while ((line = errorResult.readLine()) != null) {
                             errorMsg.append(LINE_SEP).append(line);
                         }
                     }
@@ -90,14 +97,17 @@ public class ShellUtils {
 
             }
 
-            return new CommandResult(result, successMsg == null ? "" : successMsg.toString(), errorMsg == null ? "" : errorMsg.toString());
+            return new CommandResult(result, successMsg == null ? "" : successMsg.toString(),
+                    errorMsg == null
+                            ? ""
+                            : errorMsg.toString());
         } else {
             return new CommandResult(result, "", "");
         }
     }
 
     public static class CommandResult {
-        public int result;
+        public int    result;
         public String successMsg;
         public String errorMsg;
 

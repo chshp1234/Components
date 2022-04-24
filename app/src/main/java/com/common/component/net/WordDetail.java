@@ -6,16 +6,16 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 /**
- * 查单词
- * <p>
- * Created by Tony on 2018/8/8.
+ 查单词
+ <p>
+ Created by Tony on 2018/8/8.
  */
 
 public class WordDetail implements Parcelable {
 
     public String createTime;
     public String explains;
-    public int id;
+    public int    id;
     public String initial;
     public String phonetic;
     public String status;

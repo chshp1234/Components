@@ -2,16 +2,41 @@ package com.common.component
 
 import org.junit.Test
 
-import org.junit.Assert.*
-
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleUnitTest {
+
+    val test1 = "test"
+    val test2
+        get() = "test2"
+
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        val name = Name("World")
+        print(name)
     }
+
+
+    @JvmInline
+    value class Name(private val s: String) {
+        init {
+            println("Hello, $s")
+        }
+
+        private val length: Int
+            get() = s.length
+
+
+        fun greet(): String {
+            return "$s,length=$length"
+        }
+
+        fun set(s: String) {
+
+        }
+    }
+
 }
