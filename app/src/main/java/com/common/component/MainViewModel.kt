@@ -55,10 +55,6 @@ class MainViewModel : ViewModel() {
         //                }
         //            }
         //
-        //            //4.
-        //            CustomHttp.getTranslateBySuspend(word).onResult({ onDataErr.value = it }) {
-        //                onDataSuccess.value = it
-        //            }
         //        }
     }
 
