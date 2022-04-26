@@ -1,9 +1,12 @@
 package com.common.component
 
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.get
+import com.basic.widget.DrawingView
+import com.basic.widget.ShelfTabLayout
 import com.blankj.utilcode.util.ToastUtils
 
 /**
@@ -24,5 +27,10 @@ class MainActivity : AppCompatActivity() {
             ToastUtils.showShort(it?.toString())
         }
         viewModel.getData("aaa")
+
+        findViewById<ShelfTabLayout>(R.id.shelfTabLayout).onChildClickListener =
+            View.OnClickListener {
+                findViewById<DrawingView>(R.id.drawView).clear()
+            }
     }
 }

@@ -3,6 +3,7 @@
     <declare-styleable name="ShelfTabLayout">
         <attr name="bgRadius" format="integer" />
         <attr name="checked" format="boolean" />
+        <attr name="bgColor" format="color|reference" />
     </declare-styleable>
 
     <attr name="mask_color" format="color|reference" />

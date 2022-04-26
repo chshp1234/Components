@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.LinearLayout
-import kotlin.math.sqrt
 
 
 class ShelfTabLayout(
@@ -28,6 +27,7 @@ class ShelfTabLayout(
 
     private val paint: Paint
     private val border: Path
+    private var line: Path
 
     private val clearPaint: Paint
 
@@ -39,20 +39,23 @@ class ShelfTabLayout(
     private val conjunctionHeightRate = 6
     private var conjunctionHeight = 0f
 
+    private var bgColor = 0
+
     private val animator = ValueAnimator.ofFloat().apply {
         addUpdateListener {
             updatePosition(it.animatedValue as Float)
         }
     }
 
-    private var listener: OnClickListener? = null
+    var onChildClickListener: OnClickListener? = null
 
     init {
         val array = context.obtainStyledAttributes(attrs, R.styleable.ShelfTabLayout)
         bgRadius = array.getInt(R.styleable.ShelfTabLayout_bgRadius, 0).dp2px()
+        bgColor = array.getColor(R.styleable.ShelfTabLayout_bgColor, 0)
 
         paint = Paint()
-        paint.strokeWidth = 2f
+        paint.strokeWidth = 1.dp2px()
         paint.color = Color.parseColor("#DDDDDD")
         paint.style = Paint.Style.STROKE
         paint.strokeJoin = Paint.Join.ROUND
@@ -62,6 +65,9 @@ class ShelfTabLayout(
         clearPaint = Paint()
 
         border = Path()
+        //        border.fillType = Path.FillType.WINDING
+
+        line = Path()
 
         array.recycle()
         setWillNotDraw(false)
@@ -85,14 +91,14 @@ class ShelfTabLayout(
 
     override fun setLayoutParams(params: ViewGroup.LayoutParams?) {
         when {
-            childCount == 0 -> {
+            childCount == 0         -> {
                 params?.width = 0
                 params?.height = 0
             }
             orientation == VERTICAL -> {
                 params?.height = MATCH_PARENT
             }
-            else -> {
+            else                    -> {
                 params?.width = MATCH_PARENT
             }
         }
@@ -101,7 +107,6 @@ class ShelfTabLayout(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
     }
 
@@ -129,43 +134,43 @@ class ShelfTabLayout(
             isSelected = true
 
             border.reset()
-            border.moveTo(0f, (parent as ViewGroup).getChildAt(0).top.toFloat())
-            border.lineTo(
-                currentPosition - width / 2, (parent as ViewGroup).getChildAt(0).top.toFloat()
-            )
+            line.reset()
+
+            border.moveTo(0f, 0f)
+            border.lineTo(currentPosition - width / 2, 0f)
 
             var x = currentPosition - width / conjunctionQuadRate
             val w = conjunctionHeight * conjunctionAngleRate
 
-            border.quadTo(
-                x,
-                (parent as ViewGroup).getChildAt(0).top.toFloat(),
-                (x + w).toFloat(),
-                (parent as ViewGroup).getChildAt(0).top.toFloat() - conjunctionHeight
-            )
+            border.quadTo(x, 0f, (x + w).toFloat(), -conjunctionHeight)
 
             x = currentPosition + width / conjunctionQuadRate
 
-            border.quadTo(
-                currentPosition,
-                -bgRadius,
-                (x - w).toFloat(),
-                (parent as ViewGroup).getChildAt(0).top.toFloat() - conjunctionHeight
-            )
+            border.quadTo(currentPosition, -bgRadius, (x - w).toFloat(), -conjunctionHeight)
 
-            border.quadTo(
-                x,
-                (parent as ViewGroup).getChildAt(0).top.toFloat(),
-                currentPosition + width / 2,
-                (parent as ViewGroup).getChildAt(0).top.toFloat()
-            )
+            border.quadTo(x, 0f, currentPosition + width / 2, 0f)
+
+            border.lineTo((parent as ViewGroup).width.toFloat(), 0f)
+
+            line.set(border)
+            canvas.drawPath(line, paint)
 
             border.lineTo(
                 (parent as ViewGroup).width.toFloat(),
-                (parent as ViewGroup).getChildAt(0).top.toFloat()
+                (parent as ViewGroup).height.toFloat()
             )
 
-            canvas.drawPath(border, paint)
+            border.lineTo(0f, (parent as ViewGroup).height.toFloat())
+
+            border.lineTo(0f, 0f)
+
+            canvas.save()
+            if (bgColor != 0) {
+                canvas.clipPath(border)
+                canvas.drawColor(bgColor)
+            }
+            canvas.drawPath(line, paint)
+            canvas.restore()
         }
 
         super.onDraw(canvas)
@@ -194,7 +199,7 @@ class ShelfTabLayout(
         }
         animator.start()
 
-        listener?.onClick(v)
+        onChildClickListener?.onClick(v)
     }
 
     private fun updatePosition(position: Float) {
