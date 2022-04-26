@@ -15,11 +15,11 @@ import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
+import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
-public abstract class BaseDialogFragment extends DialogFragment {
+public abstract class BaseDialogFragment extends AppCompatDialogFragment {
 
     protected FragmentActivity mContext;
 
@@ -36,7 +36,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
         // 加这句话去掉自带的标题栏
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        View view = setContent(inflater);
+        View view = setContent(inflater, container);
 
         //        mContext = (T) getActivity();
         init(view);
@@ -55,13 +55,15 @@ public abstract class BaseDialogFragment extends DialogFragment {
         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(false);
-        /** 设置宽度全屏，要设置在show的后面 */
+        //        * 设置宽度全屏，要设置在show的后面
         WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
         //        dialog.getWindow().getDecorView().setPadding(0, 0, 0, 0);
         layoutParams.gravity = Gravity.CENTER;
         layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
         dialog.getWindow().setAttributes(layoutParams);
+
+        initCustomDialog(dialog);
     }
 
     public void show() {
@@ -73,7 +75,7 @@ public abstract class BaseDialogFragment extends DialogFragment {
         try {
             super.show(manager, tag);
         } catch (Exception e) {
-//            LogUtils.e(e);
+            //            LogUtils.e(e);
         }
     }
 
@@ -81,13 +83,13 @@ public abstract class BaseDialogFragment extends DialogFragment {
     public void dismiss() {
         if (Looper.myLooper() != Looper.getMainLooper()) {
             new Handler(Looper.getMainLooper()).post(BaseDialogFragment.this::dismiss);
-//            LogUtils.e("dialog dismiss error!");
+            //            LogUtils.e("dialog dismiss error!");
             return;
         }
         try {
             super.dismiss();
         } catch (Exception e) {
-//            LogUtils.e("dismiss exception, e = " + e.getMessage());
+            //            LogUtils.e("dismiss exception, e = " + e.getMessage());
         }
     }
 
@@ -96,11 +98,11 @@ public abstract class BaseDialogFragment extends DialogFragment {
         super.onDestroyView();
     }
 
-    protected View setContent(LayoutInflater inflater) {
+    protected View setContent(LayoutInflater inflater, ViewGroup container) {
         Object layout = getContentView();
-        View   view   = null;
+        View view = null;
         if (layout instanceof Integer) {
-            view = inflater.inflate((Integer) layout, null);
+            view = inflater.inflate((Integer) layout, container, false);
         } else if (layout instanceof View) {
             view = (View) layout;
         }
@@ -108,12 +110,17 @@ public abstract class BaseDialogFragment extends DialogFragment {
     }
 
     /**
-     * 获取显示view的xml文件ID
-     *
-     * @return xml文件ID
+     获取显示view的xml文件ID
+
+     @return xml文件ID
      */
     protected abstract Object getContentView();
 
     /** 初始化应用程序，设置一些初始化数据,获取数据等操作 */
     protected abstract void init(View view);
+
+    /** 对dialog做自定义操作 */
+    protected void initCustomDialog(Dialog dialog) {
+
+    }
 }

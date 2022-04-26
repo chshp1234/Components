@@ -31,6 +31,8 @@ class MainActivity : AppCompatActivity() {
         findViewById<ShelfTabLayout>(R.id.shelfTabLayout).onChildClickListener =
             View.OnClickListener {
                 findViewById<DrawingView>(R.id.drawView).clear()
+
+                BottomDialog(this).show()
             }
     }
 }
