@@ -57,7 +57,7 @@ public abstract class BaseDialogFragment extends AppCompatDialogFragment {
         dialog.setCanceledOnTouchOutside(false);
         //        * 设置宽度全屏，要设置在show的后面
         WindowManager.LayoutParams layoutParams = dialog.getWindow().getAttributes();
-        //        dialog.getWindow().getDecorView().setPadding(0, 0, 0, 0);
+        dialog.getWindow().getDecorView().setPadding(0, 0, 0, 0);
         layoutParams.gravity = Gravity.CENTER;
         layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
         layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;

@@ -8,9 +8,15 @@
     </style>
 
     <style name="BottomDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:windowFullscreen">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowAnimationStyle">@style/Animation.Transit.Bottom</item>
+        <!--        <item name="statusBarBackground">@android:color/transparent</item>-->
+        <!--        <item name="statusBarForeground">@android:color/transparent</item>-->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 </resources>
