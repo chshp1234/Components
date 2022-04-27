@@ -113,7 +113,12 @@ public class DrawingView extends View {
     }
 
     private void touchUp(MotionEvent event) {
-//        mPath.reset();
+        //        mPath.reset();
+    }
+
+    public void clear() {
+        mPath.reset();
+        invalidate();
     }
 
 }

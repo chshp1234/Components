@@ -98,9 +98,9 @@ public class MaskableImageView extends AppCompatImageView {
     }
 
     /**
-     * 根据是否按下去来刷新bg和src created by minghao.zl at 2014-09-18
-     *
-     * @param pressed
+     根据是否按下去来刷新bg和src created by minghao.zl at 2014-09-18
+
+     @param pressed
      */
     private void updateView(boolean pressed) {
         // 如果没有点击效果

@@ -10,7 +10,7 @@ import com.basic.network.data.Success
 import retrofit2.CallAdapter
 
 /**
- * created by dongdaqing 2022/3/22 2:02 下午
+ * created by csp 2022/3/22 2:02 下午
  */
 object CustomHttp : BaseRepository<Base<*>, RequestService>() {
 

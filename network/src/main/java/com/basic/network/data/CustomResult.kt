@@ -1,7 +1,7 @@
 package com.basic.network.data
 
 /**
- * created by dongdaqing 9/14/21 10:54 AM
+ * created by csp 9/14/21 10:54 AM
  */
 sealed class CustomResult<out T> {
 
