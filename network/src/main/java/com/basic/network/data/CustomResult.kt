@@ -12,10 +12,10 @@ sealed class CustomResult<out T> {
         return this
     }
 
-    fun onResult(onSuccess: ((T?) -> Unit)? = null) {
+    inline fun onResult(crossinline onSuccess: ((T?) -> Unit)) {
         when (this) {
-            is Success -> onSuccess?.invoke(result)
-            is Err     -> err?.invoke(this)
+            is Success -> onSuccess.invoke(result)
+            is Err -> err?.invoke(this)
         }
     }
 }
@@ -32,7 +32,7 @@ class Success<T>(val result: T?) : CustomResult<T>()
 
 class InnerResult<T> {
     var err: ((Err) -> Unit)? = null
-    var success: ((T?) -> Unit)? = null
+    var success: ((T?) -> Unit) = DEFAULT_SUCCESS
 
     fun onErr(err: (Err) -> Unit) {
         this.err = err
@@ -40,6 +40,10 @@ class InnerResult<T> {
 
     fun onSuccess(success: (T?) -> Unit) {
         this.success = success
+    }
+
+    private companion object {
+        var DEFAULT_SUCCESS: ((Any?) -> Unit) = {}
     }
 }
 
