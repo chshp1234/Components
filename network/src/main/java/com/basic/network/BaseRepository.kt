@@ -28,6 +28,14 @@ abstract class BaseRepository<DATA, SERVICE> {
             // val cache = Cache(cacheFile,1024 *1024 *100)//100Mb
             // cache(cache)
 
+            customHttpInterceptor()?.forEach {
+                addInterceptor(it)
+            }
+
+            customApplicationInterceptor()?.forEach {
+                addNetworkInterceptor(it)
+            }
+
             if (com.basic.network.BuildConfig.DEBUG) {
                 val httpInterceptor = HttpLoggingInterceptor {
                     if (TextUtils.isEmpty(it)) {
@@ -46,14 +54,6 @@ abstract class BaseRepository<DATA, SERVICE> {
                 }
                 httpInterceptor.level = HttpLoggingInterceptor.Level.BODY
                 addInterceptor(httpInterceptor)
-            }
-
-            customHttpInterceptor()?.forEach {
-                addInterceptor(it)
-            }
-
-            customApplicationInterceptor()?.forEach {
-                addNetworkInterceptor(it)
             }
         }
 

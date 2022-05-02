@@ -12,7 +12,7 @@ sealed class CustomResult<out T> {
         return this
     }
 
-    inline fun onResult(crossinline onSuccess: ((T?) -> Unit)) {
+    inline fun onResult(crossinline onSuccess: ((T) -> Unit)) {
         when (this) {
             is Success -> onSuccess.invoke(result)
             is Err -> err?.invoke(this)
@@ -28,17 +28,17 @@ class Err(private val code: String, private val msg: String?) : CustomResult<Not
     }
 }
 
-class Success<T>(val result: T?) : CustomResult<T>()
+class Success<T>(val result: T) : CustomResult<T>()
 
 class InnerResult<T> {
     var err: ((Err) -> Unit)? = null
-    var success: ((T?) -> Unit) = DEFAULT_SUCCESS
+    var success: ((T) -> Unit) = DEFAULT_SUCCESS
 
     fun onErr(err: (Err) -> Unit) {
         this.err = err
     }
 
-    fun onSuccess(success: (T?) -> Unit) {
+    fun onSuccess(success: (T) -> Unit) {
         this.success = success
     }
 
