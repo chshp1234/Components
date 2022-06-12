@@ -47,7 +47,7 @@ class ShelfTabLayout(
         }
     }
 
-    var onChildClickListener: OnClickListener? = null
+    private var onChildClick: ((currentChild: View, lastChild: View?) -> Unit)? = null
 
     init {
         val array = context.obtainStyledAttributes(attrs, R.styleable.ShelfTabLayout)
@@ -75,6 +75,10 @@ class ShelfTabLayout(
         //        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
     }
 
+    fun setOnChildClickListener(onClickListener: (currentChild: View, lastChild: View?) -> Unit) {
+        onChildClick = onClickListener
+    }
+
     override fun addView(child: View?, index: Int, params: ViewGroup.LayoutParams?) {
         super.addView(child, index, params)
 
@@ -91,14 +95,14 @@ class ShelfTabLayout(
 
     override fun setLayoutParams(params: ViewGroup.LayoutParams?) {
         when {
-            childCount == 0         -> {
+            childCount == 0 -> {
                 params?.width = 0
                 params?.height = 0
             }
             orientation == VERTICAL -> {
                 params?.height = MATCH_PARENT
             }
-            else                    -> {
+            else -> {
                 params?.width = MATCH_PARENT
             }
         }
@@ -181,10 +185,9 @@ class ShelfTabLayout(
     }
 
     private fun handleClickEvent(v: View, fake: Boolean) {
+        onChildClick?.invoke(v, currentChild)
 
         currentChild = v
-
-        invalidate()
 
         val target = v.left.toFloat() + v.width / 2
 
@@ -198,15 +201,11 @@ class ShelfTabLayout(
             animator.setFloatValues(animator.animatedValue as Float, target)
         }
         animator.start()
-
-        onChildClickListener?.onClick(v)
     }
 
     private fun updatePosition(position: Float) {
         currentPosition = position
-
         invalidate()
-
     }
 
     override fun generateLayoutParams(attrs: AttributeSet?): LayoutParams {

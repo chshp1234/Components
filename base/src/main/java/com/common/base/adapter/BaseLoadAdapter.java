@@ -1,5 +1,7 @@
 package com.common.base.adapter;
 
+import static androidx.recyclerview.widget.RecyclerView.NO_POSITION;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,9 +50,11 @@ public abstract class BaseLoadAdapter<T, K extends SubViewHolder> extends BaseAd
                     }
                     if (v != null && v.getTag() != null && v.getTag() instanceof RecyclerView.ViewHolder) {
                         RecyclerView.ViewHolder holder = (RecyclerView.ViewHolder) v.getTag();
-                        mOnItemClickListener.onItemClick(v,
-                                                         mList.get(holder.getBindingAdapterPosition())
-                                                        );
+                        if (holder.getBindingAdapterPosition() == NO_POSITION) {
+                            return;
+                        }
+                        mOnItemClickListener.
+                                onItemClick(v, mList.get(holder.getBindingAdapterPosition()));
                     }
                 }
             };
