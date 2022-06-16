@@ -28,11 +28,9 @@ class MainActivity : AppCompatActivity() {
         }
         viewModel.getData("aaa")
 
-        findViewById<ShelfTabLayout>(R.id.shelfTabLayout).onChildClickListener =
-            View.OnClickListener {
-                findViewById<DrawingView>(R.id.drawView).clear()
+        findViewById<ShelfTabLayout>(R.id.shelfTabLayout).setOnChildClickListener { _, _ ->
+            findViewById<DrawingView>(R.id.drawView).clear()
+        }
 
-                BottomDialog(this).show()
-            }
     }
 }

@@ -212,7 +212,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                     }
                 }
             } catch (Throwable t) {
-                t.printStackTrace();
+//                t.printStackTrace();
             }
         }
     }

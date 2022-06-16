@@ -18,9 +18,16 @@ sealed class CustomResult<out T> {
             is Err -> err?.invoke(this)
         }
     }
+
+    fun getData(): T? {
+        return when (this) {
+            is Success -> result
+            is Err -> null
+        }
+    }
 }
 
-class Err(private val code: String, private val msg: String?) : CustomResult<Nothing>() {
+class Err(val code: String, val msg: String?, var errData: Any? = null) : CustomResult<Nothing>() {
     var err: ((Err) -> Unit)? = null
 
     override fun toString(): String {
