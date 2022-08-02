@@ -79,6 +79,12 @@ class ShelfTabLayout(
         onChildClick = onClickListener
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        animator.pause()
+        animator.cancel()
+    }
+
     override fun addView(child: View?, index: Int, params: ViewGroup.LayoutParams?) {
         super.addView(child, index, params)
 
