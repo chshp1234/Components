@@ -17,8 +17,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class AutoScriptService extends AccessibilityService {
     public static AtomicReference<String> CURRENT_ACTIVITY = new AtomicReference<>("");
-    public static AtomicReference<String> CURRENT_PACKAGE  =
-            new AtomicReference<>(PackageInfoConfig.MY_PACKAGE_NAME);
+    public static AtomicReference<String> CURRENT_PACKAGE  = new AtomicReference<>("");
 
     @Override
     protected void onServiceConnected() {
@@ -26,8 +25,8 @@ public class AutoScriptService extends AccessibilityService {
         LogUtils.d("onServiceConnected");
         setScreenOn();
         AccessibilityApplication.register(this);
-        AccessibilityApplication.initWX(AppUtils.getAppVersionName("com.tencent.mm"));
-        AccessibilityApplication.initTB(AppUtils.getAppVersionCode("com.taobao.taobao"));
+//        AccessibilityApplication.initWX(AppUtils.getAppVersionName("com.tencent.mm"));
+//        AccessibilityApplication.initTB(AppUtils.getAppVersionCode("com.taobao.taobao"));
 
 
         // 放大控制器

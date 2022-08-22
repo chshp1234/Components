@@ -102,7 +102,7 @@
     </declare-styleable>
 
     <declare-styleable name="ArcProgress">
-        <attr name="borderWidth" />
+        <attr name="borderWidth" format="dimension" />
         <attr name="unprogresColor" format="color" />
         <attr name="progressColor" format="color" />
         <attr name="tickWidth" format="dimension" />

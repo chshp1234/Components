@@ -140,8 +140,8 @@ public class AssistUtil {
         if (accessibilityNodeInfo != null) {
             Rect rect = new Rect();
             accessibilityNodeInfo.getBoundsInScreen(rect);
-            LogUtils.d(
-                    "rect:" + accessibilityNodeInfo.getText() + "{" + rect.toShortString() + "}");
+//            LogUtils.d(
+//                    "rect:" + accessibilityNodeInfo.getText() + "{" + rect.toShortString() + "}");
             float x = rect.left + rect.width() / 2;
             float y = rect.top + rect.height() / 2;
             if (x < 0 || y < 0) {

@@ -1,7 +1,5 @@
 package com.common.accessibility.viewtext;
 
-import com.blankj.utilcode.util.LogUtils;
-
 /** */
 public class TaoBWidgetText {
     /** “去购买”按钮 */
@@ -37,7 +35,6 @@ public class TaoBWidgetText {
     public static String SAY_SOMETHING_I_WANT_TO_HEAR;
 
     public static void initWidgetText(int version) {
-        LogUtils.i("initWidgetText");
         switch (version) {
             case 220 | 223:
                 GO_BUY = "去购买";
