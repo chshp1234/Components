@@ -15,12 +15,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!--<com.common.component.TestQuadView
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/drawView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />-->
+
     <com.basic.widget.ShelfTabLayout
         android:id="@+id/shelfTabLayout"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         app:bgColor="@color/white"
-        app:bgRadius="15"
+        app:borderColor="@color/red"
+        app:bgRadius="15dp"
+        app:borderStroke="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

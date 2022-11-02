@@ -1,6 +1,12 @@
 package com.common.component
 
+import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Path
 import android.os.Bundle
+import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -32,5 +38,41 @@ class MainActivity : AppCompatActivity() {
             findViewById<DrawingView>(R.id.drawView).clear()
         }
 
+    }
+}
+
+class TestQuadView(
+    context: Context,
+    attrs: AttributeSet?,
+    defStyleAttr: Int
+) : View(context, attrs, defStyleAttr) {
+    constructor(context: Context) : this(context, null)
+    constructor(context: Context, attributeSet: AttributeSet?) : this(context, attributeSet, 0)
+
+    private val paint: Paint
+    private val topLine: Path
+    private val border: Path
+
+    init {
+
+        paint = Paint()
+        paint.strokeWidth = 4F
+        paint.color = Color.parseColor("#DDDDDD")
+        paint.style = Paint.Style.STROKE
+        paint.strokeJoin = Paint.Join.ROUND
+
+        topLine = Path()
+        border = Path()
+
+    }
+
+    override fun onDraw(canvas: Canvas?) {
+        border.moveTo(200f, height.toFloat())
+        border.quadTo((width / 2).toFloat(), 0f, width.toFloat() - 200, height.toFloat())
+        canvas?.drawPath(border, paint)
+
+        topLine.moveTo(0f, (height / 2).toFloat())
+        topLine.lineTo(width.toFloat(), (height / 2).toFloat())
+        canvas?.drawPath(topLine, paint)
     }
 }

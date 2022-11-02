@@ -13,33 +13,33 @@ import android.util.TypedValue;
 import android.widget.ProgressBar;
 
 public class ArcProgress extends ProgressBar {
-    public static final int STYLE_TICK = 1;
-    public static final int STYLE_ARC = 0;
-    private final int DEFAULT_LINEHEIGHT = dp2px(15);
-    private final int DEFAULT_mTickWidth = dp2px(2);
-    private final int DEFAULT_mRadius = dp2px(72);
-    private final int DEFAULT_mUnmProgressColor = 0xffeaeaea;
-    private final int DEFAULT_mProgressColor = Color.YELLOW;
-    private final int DEFAULT_OFFSETDEGREE = 60;
-    private final int DEFAULT_DENSITY = 4;
-    private final int MIN_DENSITY = 2;
-    private final int MAX_DENSITY = 8;
-    private int mStylePogress = STYLE_TICK;
-    private boolean mBgShow;
-    private float mRadius;
-    private int mArcbgColor;
-    private int mBoardWidth;
-    private int mDegree = DEFAULT_OFFSETDEGREE;
-    private RectF mArcRectf;
-    private Paint mLinePaint;
-    private Paint mArcPaint;
-    private int mUnmProgressColor;
-    private int mProgressColor;
-    private int mTickWidth;
-    private int mTickDensity;
-    private Bitmap mCenterBitmap;
-    private Canvas mCenterCanvas;
-    private OnCenterDraw mOnCenter;
+    public static final int          STYLE_TICK                = 1;
+    public static final int          STYLE_ARC                 = 0;
+    private final       int          DEFAULT_LINEHEIGHT        = dp2px(15);
+    private final       int          DEFAULT_mTickWidth        = dp2px(2);
+    private final       int          DEFAULT_mRadius           = dp2px(72);
+    private final       int          DEFAULT_mUnmProgressColor = 0xffeaeaea;
+    private final       int          DEFAULT_mProgressColor    = Color.YELLOW;
+    private final       int          DEFAULT_OFFSETDEGREE      = 60;
+    private final       int          DEFAULT_DENSITY           = 4;
+    private final       int          MIN_DENSITY               = 2;
+    private final       int          MAX_DENSITY               = 8;
+    private             int          mStylePogress             = STYLE_TICK;
+    private             boolean      mBgShow;
+    private             float        mRadius;
+    private             int          mArcbgColor;
+    private             int          mBoardWidth;
+    private             int          mDegree                   = DEFAULT_OFFSETDEGREE;
+    private             RectF        mArcRectf;
+    private             Paint        mLinePaint;
+    private             Paint        mArcPaint;
+    private             int          mUnmProgressColor;
+    private             int          mProgressColor;
+    private             int          mTickWidth;
+    private             int          mTickDensity;
+    private             Bitmap       mCenterBitmap;
+    private             Canvas       mCenterCanvas;
+    private             OnCenterDraw mOnCenter;
 
     public ArcProgress(Context context) {
         this(context, null);
@@ -52,24 +52,30 @@ public class ArcProgress extends ProgressBar {
     public ArcProgress(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.ArcProgress);
-        mBoardWidth = array.getDimensionPixelOffset(R.styleable.ArcProgress_borderWidth, DEFAULT_LINEHEIGHT);
-        mUnmProgressColor = array.getColor(R.styleable.ArcProgress_unprogresColor, DEFAULT_mUnmProgressColor);
-        mProgressColor = array.getColor(R.styleable.ArcProgress_progressColor, DEFAULT_mProgressColor);
-        mTickWidth = array.getDimensionPixelOffset(R.styleable.ArcProgress_tickWidth, DEFAULT_mTickWidth);
-        mTickDensity = array.getInt(R.styleable.ArcProgress_tickDensity, DEFAULT_DENSITY);
-        mRadius = array.getDimensionPixelOffset(R.styleable.ArcProgress_radius, DEFAULT_mRadius);
-        mArcbgColor = array.getColor(R.styleable.ArcProgress_arcbgColor, DEFAULT_mUnmProgressColor);
-        mTickDensity = Math.max(Math.min(mTickDensity, MAX_DENSITY), MIN_DENSITY);
-        mBgShow = array.getBoolean(R.styleable.ArcProgress_bgShow, false);
-        mDegree = array.getInt(R.styleable.ArcProgress_degree, DEFAULT_OFFSETDEGREE);
-        mStylePogress = array.getInt(R.styleable.ArcProgress_progressStyle, STYLE_TICK);
+        mBoardWidth = array.getDimensionPixelOffset(R.styleable.ArcProgress_arcBorderWidth,
+                DEFAULT_LINEHEIGHT);
+        mUnmProgressColor = array.getColor(R.styleable.ArcProgress_arcLeftProgressColor,
+                DEFAULT_mUnmProgressColor);
+        mProgressColor = array.getColor(R.styleable.ArcProgress_arcProgressColor,
+                DEFAULT_mProgressColor);
+        mTickWidth = array.getDimensionPixelOffset(R.styleable.ArcProgress_arcTickWidth,
+                DEFAULT_mTickWidth);
+        mTickDensity = array.getInt(R.styleable.ArcProgress_arcTickDensity, DEFAULT_DENSITY);
+        mBgShow = array.getBoolean(R.styleable.ArcProgress_arcBgShow, false);
+        mRadius = array.getDimensionPixelOffset(R.styleable.ArcProgress_arcRadius, DEFAULT_mRadius);
+        mArcbgColor = array.getColor(R.styleable.ArcProgress_arcBgColor, DEFAULT_mUnmProgressColor);
+        mDegree = array.getInt(R.styleable.ArcProgress_arcDegree, DEFAULT_OFFSETDEGREE);
         boolean capRound = array.getBoolean(R.styleable.ArcProgress_arcCapRound, false);
+        mStylePogress = array.getInt(R.styleable.ArcProgress_arcProgressStyle, STYLE_TICK);
+
         array.recycle();
 
+        mTickDensity = Math.max(Math.min(mTickDensity, MAX_DENSITY), MIN_DENSITY);
         mArcPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mArcPaint.setColor(mArcbgColor);
-        if (capRound)
+        if (capRound) {
             mArcPaint.setStrokeCap(Paint.Cap.ROUND);
+        }
         mArcPaint.setStrokeWidth(mBoardWidth);
         mArcPaint.setStyle(Paint.Style.STROKE);
         mLinePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -104,7 +110,8 @@ public class ArcProgress extends ProgressBar {
         float y = mArcRectf.right / 2 + mBoardWidth / 2;
         if (mOnCenter != null) {
             if (mCenterCanvas == null) {
-                mCenterBitmap = Bitmap.createBitmap((int) mRadius * 2, (int) mRadius * 2, Bitmap.Config.ARGB_8888);
+                mCenterBitmap = Bitmap.createBitmap((int) mRadius * 2, (int) mRadius * 2,
+                        Bitmap.Config.ARGB_8888);
                 mCenterCanvas = new Canvas(mCenterBitmap);
             }
             mCenterCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
@@ -121,10 +128,12 @@ public class ArcProgress extends ProgressBar {
             canvas.drawArc(mArcRectf, 90 + angle, targetmDegree, false, mArcPaint);
             //绘制未完成部分
             mArcPaint.setColor(mUnmProgressColor);
-            canvas.drawArc(mArcRectf, 90 + angle + targetmDegree, 360 - mDegree - targetmDegree, false, mArcPaint);
+            canvas.drawArc(mArcRectf, 90 + angle + targetmDegree, 360 - mDegree - targetmDegree,
+                    false, mArcPaint);
         } else {
-            if (mBgShow)
+            if (mBgShow) {
                 canvas.drawArc(mArcRectf, 90 + angle, 360 - mDegree, false, mArcPaint);
+            }
             canvas.rotate(180 + angle, x, y);
             for (int i = 0; i < count; i++) {
                 if (i < target) {
@@ -132,7 +141,8 @@ public class ArcProgress extends ProgressBar {
                 } else {
                     mLinePaint.setColor(mUnmProgressColor);
                 }
-                canvas.drawLine(x, mBoardWidth + mBoardWidth / 2, x, mBoardWidth - mBoardWidth / 2, mLinePaint);
+                canvas.drawLine(x, mBoardWidth + mBoardWidth / 2, x,
+                        mBoardWidth - mBoardWidth / 2, mLinePaint);
                 canvas.rotate(mTickDensity, x, y);
             }
         }
@@ -146,11 +156,12 @@ public class ArcProgress extends ProgressBar {
                 mBoardWidth,
                 mRadius * 2 - mBoardWidth,
                 mRadius * 2 - mBoardWidth);
-//        Log.e("DEMO", "right == " + mArcRectf.right + "   mRadius == " + mRadius * 2);
+        //        Log.e("DEMO", "right == " + mArcRectf.right + "   mRadius == " + mRadius * 2);
     }
 
     protected int dp2px(int dpVal) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal, getResources().getDisplayMetrics());
+        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal,
+                getResources().getDisplayMetrics());
     }
 
     public interface OnCenterDraw {
