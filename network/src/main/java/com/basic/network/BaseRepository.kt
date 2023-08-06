@@ -80,9 +80,21 @@ abstract class BaseRepository<DATA, SERVICE> {
     }
 
     private fun getServiceClass(): Class<SERVICE> {
-        val type = (javaClass.genericSuperclass as ParameterizedType)
-        val actualTypeArguments = type.actualTypeArguments
-        return (actualTypeArguments[1] as Class<SERVICE>)
+        var serviceClass: Class<SERVICE>? = null
+        val type = javaClass.genericSuperclass
+        if (type is ParameterizedType) {
+            val actualTypeArguments = type.actualTypeArguments;
+            if (actualTypeArguments.isNotEmpty()) {
+                (actualTypeArguments[1] as? Class<SERVICE>)?.let {
+                    serviceClass = it
+                }
+
+            }
+        }
+
+        return serviceClass?.run {
+            return this
+        } ?: throw ClassNotFoundException("service not found")
     }
 
     protected abstract fun baseUrl(): String
@@ -121,48 +133,52 @@ abstract class BaseRepository<DATA, SERVICE> {
         callback: SimpleCallback<T>,
         crossinline call: SERVICE.() -> Call<*>
     ) {
-        val call = call(requestService)
-        (call as? Call<DATA>)?.enqueue(object : Callback<DATA> {
-            override fun onResponse(call: Call<DATA>, response: Response<DATA>) {
-                val body = response.body()
+        try {
+            val call = call(requestService)
+            (call as? Call<DATA>)?.enqueue(object : Callback<DATA> {
+                override fun onResponse(call: Call<DATA>, response: Response<DATA>) {
+                    val body = response.body()
 
-                val result = if (body == null) {
-                    val invocation = call.request().tag(Invocation::class.java)!!
-                    val method = invocation.method()
-                    val e = KotlinNullPointerException(
-                        "Response from " +
-                        method.declaringClass.name +
-                        '.' +
-                        method.name +
-                        " was null but response body type was declared as non-null"
-                    )
-                    catchExceptionInternal(e)
-                } else {
-                    /*validateDataInternal(body).catch { err ->
-                        callback.onErr(err.code, err.msg)
-                    }.onResult { data ->
-                        callback.onSuccess(data as T)
-                    }*/
-
-                    /*validateDataInternal(body).result {
-                        onErr { err ->
+                    val result = if (body == null) {
+                        val invocation = call.request().tag(Invocation::class.java)!!
+                        val method = invocation.method()
+                        val e = KotlinNullPointerException(
+                            "Response from " +
+                                    method.declaringClass.name +
+                                    '.' +
+                                    method.name +
+                                    " was null but response body type was declared as non-null"
+                        )
+                        catchExceptionInternal(e)
+                    } else {
+                        /*validateDataInternal(body).catch { err ->
                             callback.onErr(err.code, err.msg)
-                        }
+                        }.onResult { data ->
+                            callback.onSuccess(data as T)
+                        }*/
 
-                        onSuccess { data ->
-                            callback.onSuccess(data as T?)
-                        }
-                    }*/
-                    validateDataInternal(body) as CustomResult<T>
+                        /*validateDataInternal(body).result {
+                            onErr { err ->
+                                callback.onErr(err.code, err.msg)
+                            }
+
+                            onSuccess { data ->
+                                callback.onSuccess(data as T?)
+                            }
+                        }*/
+                        validateDataInternal(body) as CustomResult<T>
+                    }
+
+                    callback.onCallBack(result)
                 }
 
-                callback.onCallBack(result)
-            }
-
-            override fun onFailure(call: Call<DATA>, t: Throwable) {
-                callback.onCallBack(catchExceptionInternal(t))
-            }
-        }) ?: throw Throwable("call type not match")
+                override fun onFailure(call: Call<DATA>, t: Throwable) {
+                    callback.onCallBack(catchExceptionInternal(t))
+                }
+            }) ?: callback.onCallBack(catchExceptionInternal(Throwable("call type not match")))
+        } catch (e: Throwable) {
+            callback.onCallBack(catchExceptionInternal(e))
+        }
     }
 
 
