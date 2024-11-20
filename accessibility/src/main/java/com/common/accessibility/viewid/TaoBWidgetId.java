@@ -1,6 +1,5 @@
 package com.common.accessibility.viewid;
 
-import com.blankj.utilcode.util.LogUtils;
 
 /** */
 public class TaoBWidgetId {
@@ -249,7 +248,7 @@ public class TaoBWidgetId {
     public static String TAO_VIDEO_ROOT;
 
     public static void initWidgetId(int version) {
-        LogUtils.i("initWidgetId");
+//        LogUtils.i("initWidgetId");
         /*switch (version) {
         case 220 | 223:*/
         LL_NAVIGATION_TAB_LAYOUT = TB_PACKAGE + "ll_navigation_tab_layout";

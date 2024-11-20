@@ -5,15 +5,37 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.basic.widget.DrawingView
-        android:id="@+id/drawView"
+    <com.common.component.widget.MyVerticalSeekBar
+        android:layout_width="50dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center"
+        android:progress="50"
+        android:progressTint="@color/tip_blue"
+        android:rotation="-90"
+        android:splitTrack="false"
+        android:thumb="@drawable/custom_thumb_selector"
+        app:layout_constraintBottom_toTopOf="@+id/shelfTabLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!--<FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/background"
         app:layout_constraintBottom_toTopOf="@+id/shelfTabLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.basic.widget.DrawingView
+            android:id="@+id/drawView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+    </FrameLayout>-->
+
 
     <!--<com.common.component.TestQuadView
         android:layout_width="match_parent"
@@ -29,8 +51,8 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         app:bgColor="@color/white"
-        app:borderColor="@color/red"
         app:bgRadius="15dp"
+        app:borderColor="@color/red"
         app:borderStroke="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

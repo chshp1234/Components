@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.os.Bundle
+import android.os.Message
 import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -34,9 +35,9 @@ class MainActivity : AppCompatActivity() {
         }
         viewModel.getData("aaa")
 
-        findViewById<ShelfTabLayout>(R.id.shelfTabLayout).setOnChildClickListener { _, _ ->
+        /*findViewById<ShelfTabLayout>(R.id.shelfTabLayout).setOnChildClickListener { _, _ ->
             findViewById<DrawingView>(R.id.drawView).clear()
-        }
+        }*/
 
     }
 }
@@ -66,13 +67,13 @@ class TestQuadView(
 
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         border.moveTo(200f, height.toFloat())
         border.quadTo((width / 2).toFloat(), 0f, width.toFloat() - 200, height.toFloat())
-        canvas?.drawPath(border, paint)
-
+        canvas.drawPath(border, paint)
+        Message.obtain()
         topLine.moveTo(0f, (height / 2).toFloat())
         topLine.lineTo(width.toFloat(), (height / 2).toFloat())
-        canvas?.drawPath(topLine, paint)
+        canvas.drawPath(topLine, paint)
     }
 }

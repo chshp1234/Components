@@ -60,21 +60,22 @@ private fun applyDim(
                 )
             }
             animator.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator?) {
+                override fun onAnimationStart(animation: Animator) {
                 }
 
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     rootView.setTag(TAG_ANIMATOR, null)
                     if (clearWhenFinish) {
                         clearDim(rootView, false)
                     }
                 }
 
-                override fun onAnimationCancel(animation: Animator?) {
+                override fun onAnimationCancel(animation: Animator) {
                 }
 
-                override fun onAnimationRepeat(animation: Animator?) {
+                override fun onAnimationRepeat(animation: Animator) {
                 }
+
             })
             animator.start()
         }

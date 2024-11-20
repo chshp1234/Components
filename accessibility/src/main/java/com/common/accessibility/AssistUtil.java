@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityWindowInfo;
@@ -44,13 +45,13 @@ public class AssistUtil {
                 }
             };
 
-    private static final String TAG = "AssistUtil";
-    private static long ONE_SECOND = 1000L;
+    private static final String TAG        = "AssistUtil";
+    private static       long   ONE_SECOND = 1000L;
 
     /**
-     * 获取根节点 Gets root node.
-     *
-     * @return the root node
+     获取根节点 Gets root node.
+
+     @return the root node
      */
     public static AccessibilityNodeInfo getRootNode() {
         if (assistService != null) {
@@ -65,9 +66,9 @@ public class AssistUtil {
     }
 
     /**
-     * Gets window.
-     *
-     * @return the window
+     Gets window.
+
+     @return the window
      */
     public static List<AccessibilityWindowInfo> getWindow() {
         if (assistService != null) {
@@ -77,10 +78,11 @@ public class AssistUtil {
     }
 
     /**
-     * Node perform info scroll forward boolean.
-     *
-     * @param nodeInfo the node info
-     * @return the boolean
+     Node perform info scroll forward boolean.
+
+     @param nodeInfo the node info
+
+     @return the boolean
      */
     public static boolean nodePerformInfoScrollForward(AccessibilityNodeInfo nodeInfo) {
         if (nodeInfo != null) {
@@ -90,10 +92,11 @@ public class AssistUtil {
     }
 
     /**
-     * Node perform info scroll backward boolean.
-     *
-     * @param nodeInfo the node info
-     * @return the boolean
+     Node perform info scroll backward boolean.
+
+     @param nodeInfo the node info
+
+     @return the boolean
      */
     public static boolean nodePerformInfoScrollBackward(AccessibilityNodeInfo nodeInfo) {
         if (nodeInfo != null) {
@@ -103,10 +106,11 @@ public class AssistUtil {
     }
 
     /**
-     * Node perform info click boolean.
-     *
-     * @param nodeInfo the node info
-     * @return the boolean
+     Node perform info click boolean.
+
+     @param nodeInfo the node info
+
+     @return the boolean
      */
     public static boolean nodePerformInfoClick(AccessibilityNodeInfo nodeInfo) {
         while (nodeInfo != null && !nodeInfo.isClickable()) {
@@ -119,10 +123,11 @@ public class AssistUtil {
     }
 
     /**
-     * Node perform info long click boolean.
-     *
-     * @param nodeInfo the node info
-     * @return the boolean
+     Node perform info long click boolean.
+
+     @param nodeInfo the node info
+
+     @return the boolean
      */
     public static boolean nodePerformInfoLongClick(AccessibilityNodeInfo nodeInfo) {
         while (nodeInfo != null && !nodeInfo.isLongClickable()) {
@@ -140,8 +145,6 @@ public class AssistUtil {
         if (accessibilityNodeInfo != null) {
             Rect rect = new Rect();
             accessibilityNodeInfo.getBoundsInScreen(rect);
-//            LogUtils.d(
-//                    "rect:" + accessibilityNodeInfo.getText() + "{" + rect.toShortString() + "}");
             float x = rect.left + rect.width() / 2;
             float y = rect.top + rect.height() / 2;
             if (x < 0 || y < 0) {
@@ -155,7 +158,6 @@ public class AssistUtil {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static boolean nodeDispatchGestureInfoClick(Rect rect) {
         if (rect != null) {
-            LogUtils.d("rect:" + rect);
             float x = rect.left + rect.width() / 2;
             float y = rect.top + rect.height() / 2;
             if (x < 0 || y < 0) {
@@ -172,8 +174,6 @@ public class AssistUtil {
         if (accessibilityNodeInfo != null) {
             Rect rect = new Rect();
             accessibilityNodeInfo.getBoundsInScreen(rect);
-            LogUtils.d(
-                    "rect:" + accessibilityNodeInfo.getText() + "{" + rect.toShortString() + "}");
             return nodeDispatchGestureInfoLongClick(rect, duration);
         }
         return false;
@@ -182,7 +182,6 @@ public class AssistUtil {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static boolean nodeDispatchGestureInfoLongClick(Rect rect, long duration) {
         if (rect != null) {
-            LogUtils.d("{" + rect.toShortString() + "}");
             float x = rect.left + rect.width() / 2;
             float y = rect.top + rect.height() / 2;
             if (x < 0 || y < 0) {
@@ -208,7 +207,6 @@ public class AssistUtil {
             return false;
         } else {
             GestureDescription.Builder gdb = new GestureDescription.Builder();
-            LogUtils.d("Point(" + x + "," + y + ")");
             Path path = new Path();
             path.moveTo(x, y);
             path.lineTo(x, y);
@@ -225,7 +223,6 @@ public class AssistUtil {
         } else {
             Rect rect = new Rect();
             accessibilityNodeInfo.getBoundsInScreen(rect);
-            LogUtils.d("rect {" + rect.toShortString() + "}");
             float x = rect.left + rect.width() / 2;
             float y = rect.top + rect.height() / 2;
             if (x < 0 || y < 0) {
@@ -244,7 +241,6 @@ public class AssistUtil {
         } else {
             Rect rect = new Rect();
             accessibilityNodeInfo.getBoundsInScreen(rect);
-            LogUtils.d("rect {" + rect.toShortString() + "}");
             float x = rect.left + rect.width() / 2;
             float y = rect.top + rect.height() / 2;
             if (x < 0 || y < 0) {
@@ -263,7 +259,6 @@ public class AssistUtil {
         } else {
             Rect rect = new Rect();
             accessibilityNodeInfo.getBoundsInScreen(rect);
-            LogUtils.d("rect {" + rect.toShortString() + "}");
             float x = rect.left + rect.width() / 2;
             float y = rect.top + rect.height() / 2;
             if (x < 0 || y < 0) {
@@ -282,7 +277,6 @@ public class AssistUtil {
         } else {
             Rect rect = new Rect();
             accessibilityNodeInfo.getBoundsInScreen(rect);
-            LogUtils.d("rect {" + rect.toShortString() + "}");
             float x = rect.left + rect.width() / 2;
             float y = rect.top + rect.height() / 2;
             if (x < 0 || y < 0) {
@@ -296,7 +290,6 @@ public class AssistUtil {
     @RequiresApi(api = Build.VERSION_CODES.N)
     public static boolean nodeDispatchGestureInfoScroll(
             float fromX, float fromY, float toX, float toY, long during) {
-        LogUtils.d("scroll from [" + fromX + "," + fromY + "] " + "to [" + toX + "," + toY + "]");
         if (assistService == null) {
             return false;
         } else {
@@ -310,11 +303,12 @@ public class AssistUtil {
     }
 
     /**
-     * Sets edit text.
-     *
-     * @param editNodeInfo the edit node info
-     * @param text the text
-     * @return the edit text
+     Sets edit text.
+
+     @param editNodeInfo the edit node info
+     @param text         the text
+
+     @return the edit text
      */
     public static boolean setEditText(AccessibilityNodeInfo editNodeInfo, String text) {
         if (editNodeInfo != null) {
@@ -342,14 +336,15 @@ public class AssistUtil {
     }
 
     /**
-     * Gets first node info by view id.
-     *
-     * @param viewId the view id
-     * @return the first node info by view id
+     Gets first node info by view id.
+
+     @param viewId the view id
+
+     @return the first node info by view id
      */
     public static AccessibilityNodeInfo getFirstNodeInfoByViewId(String viewId) {
         AccessibilityNodeInfo rootNode = getRootNode();
-        if (rootNode == null || StringUtils.isTrimEmpty(viewId)) {
+        if (rootNode == null || TextUtils.isEmpty(viewId)) {
             return null;
             /*sleep(ONE_SECOND);
             getFocus();
@@ -364,16 +359,16 @@ public class AssistUtil {
         AccessibilityNodeInfo accessibilityNodeInfo =
                 nodeInfos.size() > 0 ? nodeInfos.get(0) : null;
         if (accessibilityNodeInfo == null) {
-            LogUtils.d("getFirstNodeInfoByViewId :  nodeInfo is null ,viewId :" + viewId);
         }
         return accessibilityNodeInfo;
     }
 
     /**
-     * Gets first node info by text.
-     *
-     * @param name the name
-     * @return the first node info by text
+     Gets first node info by text.
+
+     @param name the name
+
+     @return the first node info by text
      */
     public static AccessibilityNodeInfo getFirstNodeInfoByText(String name) {
         AccessibilityNodeInfo rootNode = getRootNode();
@@ -392,20 +387,20 @@ public class AssistUtil {
         AccessibilityNodeInfo accessibilityNodeInfo =
                 nodeInfos.size() > 0 ? nodeInfos.get(0) : null;
         if (accessibilityNodeInfo == null) {
-            LogUtils.d("getFirstNodeInfoByText :  nodeInfo is null ,name :" + name);
         }
         return accessibilityNodeInfo;
     }
 
     /**
-     * Gets first node info by view id and text.
-     *
-     * @param viewId the view id
-     * @return the first node info by view id
+     Gets first node info by view id and text.
+
+     @param viewId the view id
+
+     @return the first node info by view id
      */
     public static AccessibilityNodeInfo getFirstNodeInfoByIdAndText(String viewId, String text) {
         AccessibilityNodeInfo rootNode = getRootNode();
-        if (rootNode == null || StringUtils.isTrimEmpty(viewId)) {
+        if (rootNode == null || TextUtils.isEmpty(viewId)) {
             return null;
             /*sleep(ONE_SECOND);
             getFocus();
@@ -426,10 +421,11 @@ public class AssistUtil {
     }
 
     /**
-     * Gets first node info by text.
-     *
-     * @param name the name
-     * @return the first node info by text
+     Gets first node info by text.
+
+     @param name the name
+
+     @return the first node info by text
      */
     public static AccessibilityNodeInfo getFirstExactNodeInfoByText(String name) {
         AccessibilityNodeInfo rootNode = getRootNode();
@@ -447,9 +443,7 @@ public class AssistUtil {
         List<AccessibilityNodeInfo> nodeInfos = rootNode.findAccessibilityNodeInfosByText(name);
         if (nodeInfos != null && nodeInfos.size() > 0) {
             for (AccessibilityNodeInfo textNode : nodeInfos) {
-                LogUtils.d(textNode.getText());
                 if (getNodeInfoTextByNode(textNode).equals(name)) {
-                    LogUtils.d(textNode.getText());
                     return textNode;
                 }
             }
@@ -458,10 +452,11 @@ public class AssistUtil {
     }
 
     /**
-     * Gets first node info by text.
-     *
-     * @param name the name
-     * @return the first node info by text
+     Gets first node info by text.
+
+     @param name the name
+
+     @return the first node info by text
      */
     public static AccessibilityNodeInfo getFirstExactNodeInfoByText(
             String name, AccessibilityNodeInfo parent) {
@@ -479,9 +474,7 @@ public class AssistUtil {
         List<AccessibilityNodeInfo> nodeInfos = parent.findAccessibilityNodeInfosByText(name);
         if (nodeInfos != null && nodeInfos.size() > 0) {
             for (AccessibilityNodeInfo textNode : nodeInfos) {
-                LogUtils.d(textNode.getText());
                 if (getNodeInfoTextByNode(textNode).equals(name)) {
-                    LogUtils.d(textNode.getText());
                     return textNode;
                 }
             }
@@ -490,15 +483,16 @@ public class AssistUtil {
     }
 
     /**
-     * Gets first node info by view id.
-     *
-     * @param viewId the view id
-     * @param parent the parent
-     * @return the first node info by view id
+     Gets first node info by view id.
+
+     @param viewId the view id
+     @param parent the parent
+
+     @return the first node info by view id
      */
     public static AccessibilityNodeInfo getFirstNodeInfoByViewId(
             String viewId, @NonNull AccessibilityNodeInfo parent) {
-        if (parent == null || StringUtils.isTrimEmpty(viewId)) {
+        if (parent == null || TextUtils.isEmpty(viewId)) {
             return null;
         }
         List<AccessibilityNodeInfo> nodeInfos = parent.findAccessibilityNodeInfosByViewId(viewId);
@@ -506,11 +500,12 @@ public class AssistUtil {
     }
 
     /**
-     * Gets first node info by text.
-     *
-     * @param name the name
-     * @param parent the parent
-     * @return the first node info by text
+     Gets first node info by text.
+
+     @param name   the name
+     @param parent the parent
+
+     @return the first node info by text
      */
     public static AccessibilityNodeInfo getFirstNodeInfoByText(
             String name, AccessibilityNodeInfo parent) {
@@ -522,14 +517,15 @@ public class AssistUtil {
     }
 
     /**
-     * Gets first node info by view id.
-     *
-     * @param viewId the view id
-     * @return the first node info by view id
+     Gets first node info by view id.
+
+     @param viewId the view id
+
+     @return the first node info by view id
      */
     public static AccessibilityNodeInfo getEndNodeInfoByViewId(String viewId) {
         AccessibilityNodeInfo rootNode = getRootNode();
-        if (rootNode == null || StringUtils.isTrimEmpty(viewId)) {
+        if (rootNode == null || TextUtils.isEmpty(viewId)) {
             return null;
             /*sleep(ONE_SECOND);
             getFocus();
@@ -544,16 +540,16 @@ public class AssistUtil {
         AccessibilityNodeInfo accessibilityNodeInfo =
                 nodeInfos.size() > 0 ? nodeInfos.get(nodeInfos.size() - 1) : null;
         if (accessibilityNodeInfo == null) {
-            LogUtils.d("getEndNodeInfoByViewId :  nodeInfo is null ,viewId :" + viewId);
         }
         return accessibilityNodeInfo;
     }
 
     /**
-     * Gets first node info by text.
-     *
-     * @param name the name
-     * @return the first node info by text
+     Gets first node info by text.
+
+     @param name the name
+
+     @return the first node info by text
      */
     public static AccessibilityNodeInfo getEndNodeInfoByText(String name) {
         AccessibilityNodeInfo rootNode = getRootNode();
@@ -572,21 +568,21 @@ public class AssistUtil {
         AccessibilityNodeInfo accessibilityNodeInfo =
                 nodeInfos.size() > 0 ? nodeInfos.get(nodeInfos.size() - 1) : null;
         if (accessibilityNodeInfo == null) {
-            LogUtils.d("getEndNodeInfoByText :  nodeInfo is null ,name :" + name);
         }
         return accessibilityNodeInfo;
     }
 
     /**
-     * Gets first node info by view id.
-     *
-     * @param viewId the view id
-     * @param parent the parent
-     * @return the first node info by view id
+     Gets first node info by view id.
+
+     @param viewId the view id
+     @param parent the parent
+
+     @return the first node info by view id
      */
     public static AccessibilityNodeInfo getEndNodeInfoByViewId(
             String viewId, @NonNull AccessibilityNodeInfo parent) {
-        if (parent == null || StringUtils.isTrimEmpty(viewId)) {
+        if (parent == null || TextUtils.isEmpty(viewId)) {
             return null;
         }
         List<AccessibilityNodeInfo> nodeInfos = parent.findAccessibilityNodeInfosByViewId(viewId);
@@ -594,11 +590,12 @@ public class AssistUtil {
     }
 
     /**
-     * Gets first node info by text.
-     *
-     * @param name the name
-     * @param parent the parent
-     * @return the first node info by text
+     Gets first node info by text.
+
+     @param name   the name
+     @param parent the parent
+
+     @return the first node info by text
      */
     public static AccessibilityNodeInfo getEndNodeInfoByText(
             String name, @NonNull AccessibilityNodeInfo parent) {
@@ -611,7 +608,7 @@ public class AssistUtil {
 
     public static AccessibilityNodeInfo getAfterNodeInfoByViewId(String viewId, int index) {
         AccessibilityNodeInfo rootNode = getRootNode();
-        if (rootNode == null || StringUtils.isTrimEmpty(viewId)) {
+        if (rootNode == null || TextUtils.isEmpty(viewId)) {
             return null;
             /*sleep(ONE_SECOND);
             getFocus();
@@ -623,7 +620,7 @@ public class AssistUtil {
             }*/
         }
         List<AccessibilityNodeInfo> nodeInfos = rootNode.findAccessibilityNodeInfosByViewId(viewId);
-        if (ObjectUtils.isNotEmpty(nodeInfos)) {
+        if (nodeInfos != null && nodeInfos.size() > 0) {
             if (index <= 0) {
                 return nodeInfos.get(0);
             } else if (nodeInfos.size() > index) {
@@ -632,7 +629,6 @@ public class AssistUtil {
                 return nodeInfos.get(nodeInfos.size() - 1);
             }
         } else {
-            LogUtils.d("getAfterNodeInfoByViewId :  nodeInfo is null ,viewId :" + viewId);
             return null;
         }
     }
@@ -652,7 +648,7 @@ public class AssistUtil {
             }*/
         }
         List<AccessibilityNodeInfo> nodeInfos = rootNode.findAccessibilityNodeInfosByText(viewText);
-        if (ObjectUtils.isNotEmpty(nodeInfos)) {
+        if (nodeInfos != null && nodeInfos.size() > 0) {
             if (index <= 0) {
                 return nodeInfos.get(0);
             } else if (nodeInfos.size() > index) {
@@ -661,102 +657,93 @@ public class AssistUtil {
                 return nodeInfos.get(nodeInfos.size() - 1);
             }
         } else {
-            LogUtils.d("getAfterNodeInfoByViewId :  nodeInfo is null ,viewId :" + viewText);
             return null;
         }
     }
 
     /**
-     * Gets node infos by view id.
-     *
-     * @param viewId the view id
-     * @return the node infos by view id
+     Gets node infos by view id.
+
+     @param viewId the view id
+
+     @return the node infos by view id
      */
     public static List<AccessibilityNodeInfo> getNodeInfosByViewId(String viewId) {
         AccessibilityNodeInfo root = getRootNode();
-        if (root == null || StringUtils.isTrimEmpty(viewId)) {
-            LogUtils.i("getFirstNodeInfoByViewId: getRootNode is null ,viewId:" + viewId);
+        if (root == null || TextUtils.isEmpty(viewId)) {
             return null;
         }
         return root.findAccessibilityNodeInfosByViewId(viewId);
     }
 
     /**
-     * Gets node infos by text.
-     *
-     * @param text the text
-     * @return the node infos by text
+     Gets node infos by text.
+
+     @param text the text
+
+     @return the node infos by text
      */
     public static List<AccessibilityNodeInfo> getNodeInfosByText(String text) {
         AccessibilityNodeInfo root = getRootNode();
         if (root == null) {
-            LogUtils.d("getFirstNodeInfoByText :  getRootNode is null ,name :" + text);
             return null;
         }
         return root.findAccessibilityNodeInfosByText(text);
     }
 
     /**
-     * Gets node infos by view id.
-     *
-     * @param viewId the view id
-     * @param parent the parent
-     * @return the node infos by view id
+     Gets node infos by view id.
+
+     @param viewId the view id
+     @param parent the parent
+
+     @return the node infos by view id
      */
     public static List<AccessibilityNodeInfo> getNodeInfosByViewId(
             String viewId, AccessibilityNodeInfo parent) {
-        if (parent == null || StringUtils.isTrimEmpty(viewId)) {
-            LogUtils.i("getFirstNodeInfoByViewId: parentNode is null ,viewId:" + viewId);
+        if (parent == null || TextUtils.isEmpty(viewId)) {
             return null;
         }
         return parent.findAccessibilityNodeInfosByViewId(viewId);
     }
 
     /**
-     * Gets node infos by text.
-     *
-     * @param text the text
-     * @param parent the parent
-     * @return the node infos by text
+     Gets node infos by text.
+
+     @param text   the text
+     @param parent the parent
+
+     @return the node infos by text
      */
     public static List<AccessibilityNodeInfo> getNodeInfosByText(
             String text, AccessibilityNodeInfo parent) {
         if (parent == null) {
-            LogUtils.d("getFirstNodeInfoByText :  parentNode is null ,name :" + text);
             return null;
         }
         return parent.findAccessibilityNodeInfosByText(text);
     }
 
     /**
-     * Gets node info by parent and child.
-     *
-     * @param currentNode the current node
-     * @param parentDepth the parent depth
-     * @param child the child
-     * @return the node info by parent and child
+     Gets node info by parent and child.
+
+     @param currentNode the current node
+     @param parentDepth the parent depth
+     @param child       the child
+
+     @return the node info by parent and child
      */
     public static AccessibilityNodeInfo getNodeInfoByParentAndChild(
             AccessibilityNodeInfo currentNode, @IntRange(from = 0) int parentDepth, int... child) {
         AccessibilityNodeInfo accessibilityNodeInfo;
         if (currentNode == null) {
-            LogUtils.d("getNodeInfoByParentAndChild :  currentNode is null");
             return null;
         } else if (getRootNode() == null) {
-            LogUtils.d(
-                    "getNodeInfoByParentAndChild :  currentNode is null,id :"
-                            + currentNode.getViewIdResourceName());
             return null;
         } else {
             accessibilityNodeInfo = currentNode;
             if (parentDepth > 0) {
                 for (int i = 0; i < parentDepth; i++) {
                     if (accessibilityNodeInfo == null) {
-                        LogUtils.d(
-                                "getNodeInfoByParentAndChild :  parentNode "
-                                        + i
-                                        + " is null,id :"
-                                        + currentNode.getViewIdResourceName());
                         return null;
                     }
                     accessibilityNodeInfo = accessibilityNodeInfo.getParent();
@@ -765,11 +752,6 @@ public class AssistUtil {
             if (child != null && child.length > 0) {
                 for (int i = 0, l = child.length; i < l; i++) {
                     if (accessibilityNodeInfo == null) {
-                        LogUtils.d(
-                                "getNodeInfoByParentAndChild :  childNode "
-                                        + i
-                                        + " is null,id :"
-                                        + currentNode.getViewIdResourceName());
                         return null;
                     }
 
@@ -779,7 +761,6 @@ public class AssistUtil {
                             accessibilityNodeInfo = accessibilityNodeInfo.getChild(child[i]);
                         } catch (Exception e) {
                             accessibilityNodeInfo = null;
-                            LogUtils.e("getNodeInfoByParentAndChild: " + e);
                         }
 
                     } else {
@@ -792,10 +773,11 @@ public class AssistUtil {
     }
 
     /**
-     * 在某个节点中（父节点）寻找最后一个子（孙）节点
-     *
-     * @param parent the parent
-     * @return the accessibility node info
+     在某个节点中（父节点）寻找最后一个子（孙）节点
+
+     @param parent the parent
+
+     @return the accessibility node info
      */
     public static AccessibilityNodeInfo findLastNodeInGivenParent(AccessibilityNodeInfo parent) {
         if (parent == null) {
@@ -824,14 +806,16 @@ public class AssistUtil {
     }
 
     /**
-     * 在指定节点下寻找相应控件名字的节点.
-     *
-     * @param parent the info
+     在指定节点下寻找相应控件名字的节点.
+
+     @param parent the info
      */
     public static AccessibilityNodeInfo getNodeByWidgetName(
             AccessibilityNodeInfo parent, String widget, String text) {
         AccessibilityNodeInfo nodeInfo;
-        if (parent == null || StringUtils.isTrimEmpty(widget)) return null;
+        if (parent == null || TextUtils.isEmpty(widget)) {
+            return null;
+        }
         int count = parent.getChildCount();
         if (count > 0) {
             for (int i = 0; i < count; i++) {
@@ -849,7 +833,7 @@ public class AssistUtil {
                 String[] split = name.split("\\.");
                 name = split[split.length - 1];
                 if (name.equals(widget)) {
-                    if (!StringUtils.isTrimEmpty(text)) {
+                    if (!TextUtils.isEmpty(text)) {
                         if (getNodeInfoTextByNode(parent.getChild(i)).equals(text)) {
                             return parent.getChild(i);
                         }
@@ -883,13 +867,15 @@ public class AssistUtil {
     }
 
     /**
-     * 在指定节点下寻找相应控件名字的一组节点.
-     *
-     * @param parent the info
+     在指定节点下寻找相应控件名字的一组节点.
+
+     @param parent the info
      */
     private static void getNodeListByWidgetName(
             AccessibilityNodeInfo parent, List<AccessibilityNodeInfo> resultList, String widget) {
-        if (parent == null || StringUtils.isTrimEmpty(widget)) return;
+        if (parent == null || TextUtils.isEmpty(widget)) {
+            return;
+        }
         int count = parent.getChildCount();
         if (count > 0) {
             for (int i = 0; i < count; i++) {
@@ -915,25 +901,27 @@ public class AssistUtil {
     }
 
     /**
-     * 递归（仔细）寻找某个节点（系统自带方法失效）
-     *
-     * @param viewId the name
-     * @return the node recursive by text
+     递归（仔细）寻找某个节点（系统自带方法失效）
+
+     @param viewId the name
+
+     @return the node recursive by text
      */
     public static AccessibilityNodeInfo getNodeRecursiveById(String viewId) {
         return getNodeRecursiveById(viewId, getRootNode());
     }
 
     /**
-     * 递归（仔细）寻找某个节点（系统自带方法失效）
-     *
-     * @param viewId the name
-     * @param parent the parent
-     * @return the node recursive by text
+     递归（仔细）寻找某个节点（系统自带方法失效）
+
+     @param viewId the name
+     @param parent the parent
+
+     @return the node recursive by text
      */
     public static AccessibilityNodeInfo getNodeRecursiveById(
             String viewId, AccessibilityNodeInfo parent) {
-        if (StringUtils.isTrimEmpty(viewId)) {
+        if (TextUtils.isEmpty(viewId)) {
             return null;
         }
         AccessibilityNodeInfo rootNode = getRootNode();
@@ -960,25 +948,27 @@ public class AssistUtil {
     }
 
     /**
-     * 递归（仔细）寻找某个节点（系统自带方法失效）
-     *
-     * @param name the name
-     * @return the node recursive by text
+     递归（仔细）寻找某个节点（系统自带方法失效）
+
+     @param name the name
+
+     @return the node recursive by text
      */
     public static AccessibilityNodeInfo getNodeRecursiveByText(String name) {
         return getNodeRecursiveByText(name, getRootNode());
     }
 
     /**
-     * 递归（仔细）寻找某个节点（系统自带方法失效）
-     *
-     * @param name the name
-     * @param parent the parent
-     * @return the node recursive by text
+     递归（仔细）寻找某个节点（系统自带方法失效）
+
+     @param name   the name
+     @param parent the parent
+
+     @return the node recursive by text
      */
     public static AccessibilityNodeInfo getNodeRecursiveByText(
             String name, AccessibilityNodeInfo parent) {
-        if (StringUtils.isTrimEmpty(name)) {
+        if (TextUtils.isEmpty(name)) {
             return null;
         }
         AccessibilityNodeInfo rootNode = getRootNode();
@@ -1016,7 +1006,7 @@ public class AssistUtil {
     public static String getNodeInfoTextByNode(AccessibilityNodeInfo node) {
         if (node != null
                 && node.getText() != null
-                && !StringUtils.isTrimEmpty(node.getText().toString())) {
+                && !TextUtils.isEmpty(node.getText().toString())) {
             return node.getText().toString();
         }
         return getNodeInfoContentDescByNode(node);
@@ -1038,10 +1028,11 @@ public class AssistUtil {
     }
 
     /**
-     * 获取改节点下所有子节点数量（包括子节点的子节点...）
-     *
-     * @param nodeInfo the node info
-     * @return the node child count
+     获取改节点下所有子节点数量（包括子节点的子节点...）
+
+     @param nodeInfo the node info
+
+     @return the node child count
      */
     public static int getNodeChildCount(AccessibilityNodeInfo nodeInfo) {
         int count = 0;
@@ -1056,7 +1047,6 @@ public class AssistUtil {
     }
 
     public static boolean performReturnBack() {
-        LogUtils.d("performReturnBack: ");
         return assistService != null
                 && assistService.performGlobalAction(AccessibilityService.GLOBAL_ACTION_BACK);
     }
@@ -1067,20 +1057,22 @@ public class AssistUtil {
     }
 
     /**
-     * Perform global action boolean.
-     *
-     * @param globalActionBack the global action back
-     * @return the boolean
+     Perform global action boolean.
+
+     @param globalActionBack the global action back
+
+     @return the boolean
      */
     public static boolean performGlobalAction(int globalActionBack) {
         return assistService != null && assistService.performGlobalAction(globalActionBack);
     }
 
     /**
-     * 跳转到目标Activity
-     *
-     * @param pkg The name of the package that the component exists in. Can not be null
-     * @return the boolean
+     跳转到目标Activity
+
+     @param pkg The name of the package that the component exists in. Can not be null
+
+     @return the boolean
      */
     public static boolean gotoTargetActivity(String pkg) {
         if (assistService != null) {
@@ -1102,15 +1094,16 @@ public class AssistUtil {
     }
 
     /**
-     * 跳转到目标Activity
-     *
-     * @param pkg The name of the package that the component exists in. Can not be null
-     * @param cls the cls
-     * @param action An action name, such as ACTION_VIEW. Application-specific actions should be
-     *     prefixed with the vendor's package name
-     * @param category The desired category. This can be either one of the predefined Intent
-     *     categories, or a custom category in your own namespace
-     * @return the boolean
+     跳转到目标Activity
+
+     @param pkg      The name of the package that the component exists in. Can not be null
+     @param cls      the cls
+     @param action   An action name, such as ACTION_VIEW. Application-specific actions should be
+     prefixed with the vendor's package name
+     @param category The desired category. This can be either one of the predefined Intent
+     categories, or a custom category in your own namespace
+
+     @return the boolean
      */
     public static boolean gotoTargetActivity(
             String pkg, String cls, String action, String... category) {
@@ -1122,17 +1115,20 @@ public class AssistUtil {
         }
 
         if (category != null && category.length > 0) {
-            for (String cat : category) intent.addCategory(cat);
+            for (String cat : category) {
+                intent.addCategory(cat);
+            }
         }
         intent.setComponent(cmp);
         return gotoTargetActivity(intent);
     }
 
     /**
-     * Goto target activity boolean.
-     *
-     * @param intent the intent
-     * @return the boolean
+     Goto target activity boolean.
+
+     @param intent the intent
+
+     @return the boolean
      */
     public static boolean gotoTargetActivity(Intent intent) {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -1144,10 +1140,11 @@ public class AssistUtil {
     }
 
     /**
-     * 打开应用市场
-     *
-     * @param pkgName the pkg name
-     * @return the boolean
+     打开应用市场
+
+     @param pkgName the pkg name
+
+     @return the boolean
      */
     public static boolean startMarket(Context context, String pkgName) {
         Uri uri = Uri.parse("market://details?id=" + pkgName);
@@ -1156,7 +1153,6 @@ public class AssistUtil {
             context.startActivity(marketIntent);
             return true;
         } catch (Exception e) {
-            LogUtils.d(e);
             return false;
         }
     }
@@ -1180,9 +1176,9 @@ public class AssistUtil {
     }
 
     /**
-     * Sleep.
-     *
-     * @param milli the milli
+     Sleep.
+
+     @param milli the milli
      */
     public static void sleepSafely(long milli) {
         try {
@@ -1197,23 +1193,22 @@ public class AssistUtil {
     }
 
     /**
-     * Gets current activity.
-     *
-     * @return the current activity
+     Gets current activity.
+
+     @return the current activity
      */
     public static String getCurrentAPPPackageName() {
 
         if (assistService != null && assistService.getRootInActiveWindow() != null) {
             return assistService.getRootInActiveWindow().getPackageName().toString();
         }
-        LogUtils.d("getCurrentPackage: can't find root ActiveWindow");
         return null;
     }
 
     /**
-     * 打印此时的界面状况,便于分析
-     *
-     * @return the string
+     打印此时的界面状况,便于分析
+
+     @return the string
      */
     public static String analysisPacketInfo() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -1228,11 +1223,11 @@ public class AssistUtil {
     }
 
     /**
-     * 打印此时的界面状况,便于分析
-     *
-     * @param info the info
-     * @param sb the sb
-     * @param ints the ints
+     打印此时的界面状况,便于分析
+
+     @param info the info
+     @param sb   the sb
+     @param ints the ints
      */
     public static void analysisPacketInfo(
             AccessibilityNodeInfo info, StringBuilder sb, int... ints) {

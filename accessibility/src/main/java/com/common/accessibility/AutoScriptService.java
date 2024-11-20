@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Region;
 import android.os.PowerManager;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -22,7 +23,6 @@ public class AutoScriptService extends AccessibilityService {
     @Override
     protected void onServiceConnected() {
         super.onServiceConnected();
-        LogUtils.d("onServiceConnected");
         setScreenOn();
         AccessibilityApplication.register(this);
 //        AccessibilityApplication.initWX(AppUtils.getAppVersionName("com.tencent.mm"));
@@ -49,18 +49,6 @@ public class AutoScriptService extends AccessibilityService {
                                 ScreenUtils.getAppScreenWidth(),
                                 ScreenUtils.getAppScreenHeight() >> 2);*/
 
-                                LogUtils.d(
-                                        "onMagnificationChanged:\n scale="
-                                        + scale
-                                        + "\n"
-                                        + "centerX="
-                                        + centerX
-                                        + "\n"
-                                        + "centerY="
-                                        + centerY
-                                        + "\n"
-                                        + "region="
-                                        + region.toString());
                             }
                         });
 
@@ -96,13 +84,11 @@ public class AutoScriptService extends AccessibilityService {
 
     @Override
     protected boolean onGesture(int gestureId) {
-        LogUtils.i("onGesture: " + gestureId);
         return true;
     }
 
     @Override
     protected boolean onKeyEvent(KeyEvent event) {
-        LogUtils.i("onKeyEvent: " + event.toString());
         return false;
     }
 
@@ -127,8 +113,8 @@ public class AutoScriptService extends AccessibilityService {
                             ? event.getPackageName().toString().intern()
                             : "");
 
-            LogUtils.i("当前页面包名：" + event.getPackageName());
-            LogUtils.i("当前页面Activity：" + event.getClassName());
+            Log.i("AUTO","当前页面包名：" + event.getPackageName());
+            Log.i("AUTO","当前页面Activity：" + event.getClassName());
 
             // 跳转到获取悬浮窗授权页面
             if ("com.android.settings".equals(event.getPackageName().toString())
@@ -137,7 +123,6 @@ public class AutoScriptService extends AccessibilityService {
                 AccessibilityNodeInfo accessibilityNodeInfo =
                         AssistUtil.getFirstNodeInfoByViewId(
                                 SystemWidgetId.SETTING_SUB_SWITCH_WIDGET);
-                LogUtils.i(accessibilityNodeInfo);
 
             }
             // 获取截屏权限页面弹出
@@ -146,7 +131,6 @@ public class AutoScriptService extends AccessibilityService {
                              .equals(event.getClassName().toString())) {
                 AccessibilityNodeInfo accessibilityNodeInfo =
                         AssistUtil.getFirstNodeInfoByViewId(SystemWidgetId.SCREEN_SHOT_NO_ASK);
-                LogUtils.i(accessibilityNodeInfo);
             }
             // 获取动态权限弹窗页面
             else if ("com.android.packageinstaller".equals(event.getPackageName().toString())
@@ -155,7 +139,6 @@ public class AutoScriptService extends AccessibilityService {
                 AccessibilityNodeInfo accessibilityNodeInfo =
                         AssistUtil.getFirstNodeInfoByViewId(
                                 SystemWidgetId.PERMISSION_DO_NOT_ASK_CHECKBOX);
-                LogUtils.i(accessibilityNodeInfo);
             }
         }
     }
