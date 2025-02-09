@@ -25,8 +25,8 @@ public class AutoScriptService extends AccessibilityService {
         super.onServiceConnected();
         setScreenOn();
         AccessibilityApplication.register(this);
-//        AccessibilityApplication.initWX(AppUtils.getAppVersionName("com.tencent.mm"));
-//        AccessibilityApplication.initTB(AppUtils.getAppVersionCode("com.taobao.taobao"));
+        //        AccessibilityApplication.initWX(AppUtils.getAppVersionName("com.tencent.mm"));
+        //        AccessibilityApplication.initTB(AppUtils.getAppVersionCode("com.taobao.taobao"));
 
 
         // 放大控制器
@@ -37,7 +37,7 @@ public class AutoScriptService extends AccessibilityService {
                             @Override
                             public void onMagnificationChanged(
                                     @NonNull
-                                            MagnificationController controller,
+                                    MagnificationController controller,
                                     @NonNull Region region,
                                     float scale,
                                     float centerX,
@@ -113,13 +113,13 @@ public class AutoScriptService extends AccessibilityService {
                             ? event.getPackageName().toString().intern()
                             : "");
 
-            Log.i("AUTO","当前页面包名：" + event.getPackageName());
-            Log.i("AUTO","当前页面Activity：" + event.getClassName());
+            Log.i("AUTO", "当前页面包名：" + event.getPackageName());
+            Log.i("AUTO", "当前页面Activity：" + event.getClassName());
 
             // 跳转到获取悬浮窗授权页面
             if ("com.android.settings".equals(event.getPackageName().toString())
-                && "com.android.settings.Settings$AppDrawOverlaySettingsActivity"
-                        .equals(event.getClassName().toString())) {
+                    && "com.android.settings.Settings$AppDrawOverlaySettingsActivity"
+                    .equals(event.getClassName().toString())) {
                 AccessibilityNodeInfo accessibilityNodeInfo =
                         AssistUtil.getFirstNodeInfoByViewId(
                                 SystemWidgetId.SETTING_SUB_SWITCH_WIDGET);
@@ -127,15 +127,15 @@ public class AutoScriptService extends AccessibilityService {
             }
             // 获取截屏权限页面弹出
             else if ("com.android.systemui".equals(event.getPackageName().toString())
-                     && "com.android.systemui.media.MediaProjectionPermissionActivity"
-                             .equals(event.getClassName().toString())) {
+                    && "com.android.systemui.media.MediaProjectionPermissionActivity"
+                    .equals(event.getClassName().toString())) {
                 AccessibilityNodeInfo accessibilityNodeInfo =
                         AssistUtil.getFirstNodeInfoByViewId(SystemWidgetId.SCREEN_SHOT_NO_ASK);
             }
             // 获取动态权限弹窗页面
             else if ("com.android.packageinstaller".equals(event.getPackageName().toString())
-                     && "com.android.packageinstaller.permission.ui.GrantPermissionsActivity"
-                             .equals(event.getClassName().toString())) {
+                    && "com.android.packageinstaller.permission.ui.GrantPermissionsActivity"
+                    .equals(event.getClassName().toString())) {
                 AccessibilityNodeInfo accessibilityNodeInfo =
                         AssistUtil.getFirstNodeInfoByViewId(
                                 SystemWidgetId.PERMISSION_DO_NOT_ASK_CHECKBOX);
@@ -149,8 +149,8 @@ public class AutoScriptService extends AccessibilityService {
     private void setScreenOn() {
         PowerManager powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
         @SuppressLint("InvalidWakeLockTag")
-        PowerManager.WakeLock wakeLock =
-                powerManager.newWakeLock(PowerManager.FULL_WAKE_LOCK, "Vuctrl");
+        PowerManager.WakeLock wakeLock = powerManager
+                .newWakeLock(PowerManager.FULL_WAKE_LOCK, "test");
         wakeLock.acquire();
     }
 }
